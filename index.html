@@ -83,6 +83,11 @@
     width: 100%;
     min-height: 100%;
   }
+  /* Result screen starts from top so long content is not clipped */
+  #screen6 .screen-inner {
+    justify-content: flex-start;
+    padding-bottom: 5rem;
+  }
 
   /* ── PROGRESS BAR ── */
   .progress-bar-wrap {
@@ -345,6 +350,7 @@
   .oracle-text { font-size: 1.05rem; line-height: 1.85; color: var(--star); font-style: italic; margin-bottom: 1.4rem; }
 
   .action-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1.4rem; }
+  @media(max-width:400px) { .action-cards { grid-template-columns: 1fr; } }
   .action-card {
     border: 1px solid rgba(107,79,160,0.25);
     border-radius: 8px; padding: 0.9rem;
@@ -1053,9 +1059,10 @@ function drawStars(ctx, W, H) {
   });
 }
 
-async function generateShareImage(d) {
+async function generateShareImage(d, forcedH) {
   const canvas = document.getElementById('shareCanvas');
-  const W = 1080, H = 1920; // 9:16 story format
+  const W = 1080;
+  const H = forcedH || 1920;
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
@@ -1155,33 +1162,57 @@ async function generateShareImage(d) {
   ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
   curY += 50;
 
-  // ── MANTRA box
-  const boxH = 180;
-  const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
-  boxGrad.addColorStop(0, 'rgba(107,79,160,0.15)');
-  boxGrad.addColorStop(1, 'rgba(107,79,160,0.05)');
-  ctx.fillStyle = boxGrad;
-  ctx.beginPath();
-  ctx.roundRect(80, curY, W - 160, boxH, 16);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.roundRect(80, curY, W - 160, boxH, 16);
-  ctx.stroke();
+  // ── MANTRA box — dynamic height based on text
+  {
+    const mantraText = `"${d.mantra}"`;
+    const mantraFont = 'bold italic 38px Georgia, serif';
+    ctx.font = mantraFont;
+    // Measure wrapped lines
+    const mantraWords = mantraText.split(' ');
+    const mantraMaxW = W - 240;
+    const mantraLH = 52;
+    let mantraLines = 0;
+    let testLine = '';
+    for (let i = 0; i < mantraWords.length; i++) {
+      const test = testLine + mantraWords[i] + ' ';
+      if (ctx.measureText(test).width > mantraMaxW && i > 0) {
+        mantraLines++;
+        testLine = mantraWords[i] + ' ';
+      } else {
+        testLine = test;
+      }
+    }
+    mantraLines++; // last line
+    const boxPad = 50;
+    const labelH = 60;
+    const boxH = labelH + (mantraLines * mantraLH) + boxPad;
 
-  ctx.font = '22px Georgia, serif';
-  ctx.fillStyle = 'rgba(201,168,76,0.7)';
-  ctx.textAlign = 'center';
-  ctx.fillText('✨  MANTRA', W / 2, curY + 44);
+    const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
+    boxGrad.addColorStop(0, 'rgba(107,79,160,0.15)');
+    boxGrad.addColorStop(1, 'rgba(107,79,160,0.05)');
+    ctx.fillStyle = boxGrad;
+    ctx.beginPath();
+    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.stroke();
 
-  ctx.font = 'bold italic 38px Georgia, serif';
-  ctx.fillStyle = '#f0d080';
-  ctx.shadowColor = 'rgba(201,168,76,0.4)';
-  ctx.shadowBlur = 15;
-  wrapText(ctx, `"${d.mantra}"`, W/2 - (W-240)/2, curY + 95, W - 240, 52);
-  ctx.shadowBlur = 0;
-  curY += boxH + 50;
+    ctx.font = '22px Georgia, serif';
+    ctx.fillStyle = 'rgba(201,168,76,0.7)';
+    ctx.textAlign = 'center';
+    ctx.fillText('✨  MANTRA', W / 2, curY + 44);
+
+    ctx.font = mantraFont;
+    ctx.fillStyle = '#f0d080';
+    ctx.shadowColor = 'rgba(201,168,76,0.4)';
+    ctx.shadowBlur = 15;
+    wrapText(ctx, mantraText, W/2 - (W-240)/2, curY + labelH + 10, mantraMaxW, mantraLH);
+    ctx.shadowBlur = 0;
+    curY += boxH + 50;
+  }
 
   // ── AÇÃO IMEDIATA
   ctx.textAlign = 'left';
@@ -1224,6 +1255,14 @@ async function generateShareImage(d) {
   ctx.font = '22px Georgia, serif';
   ctx.fillStyle = 'rgba(136,120,187,0.45)';
   ctx.fillText('Consulte os astros e descubra seu caminho', W / 2, footerY + 50);
+
+  // If content went past canvas height, extend and redraw
+  const neededH = Math.max(1920, curY + 200);
+  if (neededH > 1920) {
+    canvas.height = neededH;
+    // Redraw with new height — recursive call with flag
+    return generateShareImage(d, neededH);
+  }
 
   // Store blob for sharing
   return new Promise(resolve => {
