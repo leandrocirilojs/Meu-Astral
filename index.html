@@ -1135,224 +1135,249 @@ function drawStars(ctx, W, H) {
 }
 
 async function generateShareImage(d, forcedH) {
-  // Ensure fonts are loaded into canvas context on mobile
-  try {
-    const f1 = new FontFace('CanvasSerif', 'local(Georgia), local(Palatino), local(serif)');
-    await f1.load().catch(()=>{});
-  } catch(e) {}
-  // Small delay to let browser settle fonts
-  if (!forcedH) await new Promise(r => setTimeout(r, 100));
+  // Wait a tick for the browser to settle
+  await new Promise(r => setTimeout(r, 50));
 
   const canvas = document.getElementById('shareCanvas');
   const W = 1080;
-  const H = forcedH || 1920;
-  canvas.width = W;
+  const name = (document.getElementById('userName').value || 'Consulente').toUpperCase();
+  const sign = selectedSign;
+  const today = new Date().toLocaleDateString('pt-BR', { day:'numeric', month:'long', year:'numeric' });
+  const moon = getMoonPhase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim(); // strip emoji from moon
+
+  // ── measure content height first ──
+  // We'll use a temp canvas to measure text, then draw on real canvas
+  const PAD = 90;
+  const TW = W - PAD * 2; // text width
+
+  // Helper: measure wrapped line count
+  function countLines(ctx, text, maxW, font) {
+    ctx.font = font;
+    const words = text.split(' ');
+    let line = '', lines = 0;
+    for (let i = 0; i < words.length; i++) {
+      const test = line + words[i] + ' ';
+      if (ctx.measureText(test).width > maxW && i > 0) { lines++; line = words[i] + ' '; }
+      else line = test;
+    }
+    return lines + 1;
+  }
+
+  // Estimate total height
+  const tmp = document.createElement('canvas');
+  tmp.width = W; tmp.height = 100;
+  const tc = tmp.getContext('2d');
+
+  const diagLines  = countLines(tc, d.diagnostico,   TW, 'italic 34px serif');
+  const mantraText = '"' + d.mantra + '"';
+  const mantraLines= countLines(tc, mantraText,       TW - 60, 'bold 36px serif');
+  const acaoLines  = countLines(tc, d.acoes[0].texto, TW, 'italic 32px serif');
+  const reflexLines= countLines(tc, '"' + d.reflexao + '"', TW, 'italic 32px serif');
+
+  const LH = 54;
+  const estimatedH = Math.max(forcedH || 0,
+    680                          // header block
+    + diagLines * LH + 80       // diagnostico
+    + 80 + mantraLines * LH + 120  // mantra box
+    + acaoLines * LH + 80       // acao
+    + reflexLines * LH + 80     // reflexao
+    + 160                        // footer
+  );
+  const H = Math.max(1920, estimatedH);
+
+  canvas.width  = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
-  // Force canvas activation on mobile
-  ctx.fillStyle = '#080511';
-  ctx.fillRect(0, 0, W, H);
-  const name = document.getElementById('userName').value || 'Consulente';
-  const sign = selectedSign;
-  const today = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
-  const moon = getMoonPhase();
 
-  // ── BACKGROUND gradient
-  const bg = ctx.createLinearGradient(0, 0, W * 0.6, H);
-  bg.addColorStop(0,   '#080511');
-  bg.addColorStop(0.4, '#0f0920');
-  bg.addColorStop(1,   '#150c2a');
+  // ── BACKGROUND — solid + linear gradient only (no radial, safe on all mobile) ──
+  ctx.fillStyle = '#0a0718';
+  ctx.fillRect(0, 0, W, H);
+
+  // Diagonal color wash — top violet, bottom dark
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0,   '#0f0a22');
+  bg.addColorStop(0.5, '#0c0917');
+  bg.addColorStop(1,   '#130b20');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
-  // ── top glow
-  const glow1 = ctx.createRadialGradient(W/2, 0, 0, W/2, 0, H * 0.55);
-  glow1.addColorStop(0,   'rgba(107,79,160,0.35)');
-  glow1.addColorStop(0.5, 'rgba(107,79,160,0.1)');
-  glow1.addColorStop(1,   'transparent');
-  ctx.fillStyle = glow1;
-  ctx.fillRect(0, 0, W, H);
+  // Top glow — linear gradient rectangle (safe!)
+  const topGlow = ctx.createLinearGradient(0, 0, 0, H * 0.4);
+  topGlow.addColorStop(0,   'rgba(107,79,160,0.28)');
+  topGlow.addColorStop(1,   'rgba(107,79,160,0)');
+  ctx.fillStyle = topGlow;
+  ctx.fillRect(0, 0, W, H * 0.4);
 
-  // ── bottom gold glow
-  const glow2 = ctx.createRadialGradient(W/2, H, 0, W/2, H, H * 0.45);
-  glow2.addColorStop(0,   'rgba(201,168,76,0.12)');
-  glow2.addColorStop(1,   'transparent');
-  ctx.fillStyle = glow2;
-  ctx.fillRect(0, 0, W, H);
+  // ── STARS — simple dots ──
+  const starPts = [
+    [85,70],[250,130],[420,45],[580,95],[730,35],[870,110],[970,75],
+    [60,300],[950,280],[110,700],[980,650],[200,900],[900,870],
+    [150,1100],[970,1050],[80,1400],[960,1380],[300,1600],[850,1550],
+    [180,1800],[920,1750],[500,60],[540,500],[480,1200]
+  ];
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  starPts.forEach(([x,y],i) => {
+    const r = i % 4 === 0 ? 2 : 1.2;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+  });
 
-  // ── stars
-  drawStars(ctx, W, H);
-
-  // ── border frame
-  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(40, 40, W - 80, H - 80);
-  ctx.strokeStyle = 'rgba(107,79,160,0.15)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(55, 55, W - 110, H - 110);
-
-  // ── top ornament line
+  // ── BORDER ──
   ctx.strokeStyle = 'rgba(201,168,76,0.3)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(45, 45, W-90, H-90);
+  ctx.strokeStyle = 'rgba(107,79,160,0.2)';
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(120, 160); ctx.lineTo(W - 120, 160); ctx.stroke();
-  ctx.fillStyle = 'rgba(201,168,76,0.5)';
-  ctx.font = '28px Georgia,Palatino,serif'; ctx.textAlign = 'center';
-  ctx.fillText('✦  ✧  ✦', W / 2, 155);
+  ctx.strokeRect(60, 60, W-120, H-120);
 
-  // ── BIG SIGN SYMBOL
-  ctx.font = '160px serif';
-  ctx.textAlign = 'center';
-  ctx.shadowColor = 'rgba(107,79,160,0.9)';
-  ctx.shadowBlur = 60;
-  ctx.fillStyle = 'rgba(160,122,208,0.9)';
-  ctx.fillText(sign.symbol, W / 2, 400);
-  ctx.shadowBlur = 0;
-
-  // ── NAME + SIGN
-  ctx.font = 'bold 52px Georgia,Palatino,serif';
-  ctx.fillStyle = '#f0d080';
-  ctx.shadowColor = 'rgba(201,168,76,0.5)';
-  ctx.shadowBlur = 20;
-  ctx.fillText(name.toUpperCase(), W / 2, 480);
-  ctx.shadowBlur = 0;
-
-  ctx.font = 'italic 36px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(160,122,208,0.85)';
-  ctx.fillText(`${sign.name}  ·  ${sign.element}  ·  ${sign.ruler}`, W / 2, 535);
-
-  // ── date + moon
-  ctx.font = '28px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(136,120,187,0.7)';
-  ctx.fillText(`${today}  ·  ${moon}`, W / 2, 590);
-
-  // ── divider
-  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+  // ── DECORATIVE TOP LINE ──
+  ctx.strokeStyle = 'rgba(201,168,76,0.35)';
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(120, 630); ctx.lineTo(W - 120, 630); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(130, 165); ctx.lineTo(W-130, 165); ctx.stroke();
 
-  // ── DIAGNOSTICO section
-  ctx.textAlign = 'left';
-  ctx.font = '26px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(160,122,208,0.7)';
-  ctx.fillText('✦  MOMENTO ASTRAL', 100, 690);
-
-  ctx.font = 'italic 34px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(232,224,255,0.9)';
-  let curY = wrapText(ctx, d.diagnostico, 100, 740, W - 200, 52);
-
-  curY += 30;
-
-  // ── divider
-  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
-  curY += 50;
-
-  // ── MANTRA box — dynamic height based on text
-  {
-    const mantraText = `"${d.mantra}"`;
-    const mantraFont = 'bold italic 38px Georgia,Palatino,serif';
-    ctx.font = mantraFont;
-    // Measure wrapped lines — same maxWidth as rendering
-    const mantraWords = mantraText.split(' ');
-    const mantraMaxW = W - 240; // 120px padding each side
-    const mantraLH = 52;
-    let mantraLines = 0;
-    let testLine = '';
-    for (let i = 0; i < mantraWords.length; i++) {
-      const test = testLine + mantraWords[i] + ' ';
-      if (ctx.measureText(test).width > mantraMaxW && i > 0) {
-        mantraLines++;
-        testLine = mantraWords[i] + ' ';
-      } else {
-        testLine = test;
-      }
-    }
-    mantraLines++; // last line
-    const boxPad = 60; // extra breathing room
-    const labelH = 70;
-    const boxH = labelH + (mantraLines * mantraLH) + boxPad;
-
-    const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
-    boxGrad.addColorStop(0, 'rgba(107,79,160,0.15)');
-    boxGrad.addColorStop(1, 'rgba(107,79,160,0.05)');
-    ctx.fillStyle = boxGrad;
+  // Diamond ornaments
+  function diamond(x, y, size, color) {
+    ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.moveTo(x, y-size); ctx.lineTo(x+size, y);
+    ctx.lineTo(x, y+size); ctx.lineTo(x-size, y);
+    ctx.closePath(); ctx.fill();
+  }
+  diamond(W/2,      158, 6, 'rgba(201,168,76,0.7)');
+  diamond(W/2-60,   158, 4, 'rgba(201,168,76,0.4)');
+  diamond(W/2+60,   158, 4, 'rgba(201,168,76,0.4)');
+
+  // ── SIGN SYMBOL — drawn as circle + symbol text ──
+  const sigCX = W/2, sigCY = 360, sigR = 130;
+  // Glow circle (linear gradient rect clipped to circle)
+  ctx.save();
+  ctx.beginPath(); ctx.arc(sigCX, sigCY, sigR+30, 0, Math.PI*2); ctx.clip();
+  const sigGlow = ctx.createLinearGradient(sigCX-sigR, sigCY-sigR, sigCX+sigR, sigCY+sigR);
+  sigGlow.addColorStop(0, 'rgba(107,79,160,0.5)');
+  sigGlow.addColorStop(1, 'rgba(60,30,100,0.1)');
+  ctx.fillStyle = sigGlow; ctx.fillRect(sigCX-sigR-30, sigCY-sigR-30, (sigR+30)*2, (sigR+30)*2);
+  ctx.restore();
+  // Circle border
+  ctx.strokeStyle = 'rgba(160,122,208,0.6)';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(sigCX, sigCY, sigR, 0, Math.PI*2); ctx.stroke();
+  // Sign symbol
+  ctx.font = '130px serif';
+  ctx.fillStyle = 'rgba(200,180,255,0.95)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(sign.symbol, sigCX, sigCY);
+  ctx.textBaseline = 'alphabetic';
+
+  // ── NAME ──
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 56px serif';
+  ctx.fillStyle = '#f0d080';
+  ctx.fillText(name, W/2, 555);
+
+  // ── SIGN INFO ──
+  ctx.font = 'italic 34px serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.9)';
+  ctx.fillText(sign.name + '  ·  ' + sign.element + '  ·  ' + sign.ruler, W/2, 610);
+
+  // ── DATE ──
+  ctx.font = '28px serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.75)';
+  ctx.fillText(today, W/2, 658);
+
+  // ── DIVIDER ──
+  function divider(y) {
+    const grad = ctx.createLinearGradient(100, y, W-100, y);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(0.5, 'rgba(201,168,76,0.3)');
+    grad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = grad; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(100, y); ctx.lineTo(W-100, y); ctx.stroke();
+  }
+
+  // ── SECTION LABEL ──
+  function sectionLabel(label, y) {
+    ctx.font = '24px serif';
+    ctx.fillStyle = 'rgba(160,122,208,0.75)';
+    ctx.textAlign = 'left';
+    // small diamond bullet
+    diamond(PAD + 8, y - 6, 5, 'rgba(201,168,76,0.6)');
+    ctx.fillText(label, PAD + 22, y);
+    return y + 44;
+  }
+
+  let curY = 710;
+  divider(curY); curY += 50;
+
+  // ── MOMENTO ASTRAL ──
+  curY = sectionLabel('MOMENTO ASTRAL', curY);
+  ctx.font = 'italic 34px serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.92)';
+  ctx.textAlign = 'left';
+  curY = wrapText(ctx, d.diagnostico, PAD, curY, TW, LH);
+  curY += 40;
+  divider(curY); curY += 50;
+
+  // ── MANTRA BOX ──
+  {
+    const mText = '"' + d.mantra + '"';
+    ctx.font = 'bold 36px serif';
+    const mLines = countLines(ctx, mText, TW - 60, 'bold 36px serif');
+    const boxH = 70 + mLines * 50 + 60;
+
+    // Box background
+    const bx = 80, bw = W - 160;
+    ctx.fillStyle = 'rgba(107,79,160,0.12)';
+    ctx.beginPath();
+    ctx.roundRect(bx, curY, bw, boxH, 14);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+    ctx.strokeStyle = 'rgba(201,168,76,0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.roundRect(bx, curY, bw, boxH, 14);
     ctx.stroke();
 
-    ctx.font = '22px Georgia,Palatino,serif';
-    ctx.fillStyle = 'rgba(201,168,76,0.7)';
+    // MANTRA label
+    ctx.font = '22px serif';
+    ctx.fillStyle = 'rgba(201,168,76,0.8)';
     ctx.textAlign = 'center';
-    ctx.fillText('✨  MANTRA', W / 2, curY + 44);
+    ctx.fillText('* MANTRA *', W/2, curY + 42);
 
-    ctx.font = mantraFont;
+    // Mantra text
+    ctx.font = 'bold 36px serif';
     ctx.fillStyle = '#f0d080';
-    ctx.shadowColor = 'rgba(201,168,76,0.4)';
-    ctx.shadowBlur = 15;
-    ctx.textAlign = 'center';
-    // wrapText centered: pass center X, and adjust wrapText to use center alignment
-    wrapTextCenter(ctx, mantraText, W / 2, curY + labelH + 10, mantraMaxW, mantraLH);
-    ctx.shadowBlur = 0;
+    wrapTextCenter(ctx, mText, W/2, curY + 88, TW - 60, 50);
     curY += boxH + 50;
   }
 
-  // ── AÇÃO IMEDIATA
+  // ── ACAO IMEDIATA ──
+  curY = sectionLabel('ACAO IMEDIATA', curY);
+  ctx.font = 'italic 32px serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.88)';
   ctx.textAlign = 'left';
-  ctx.font = '26px Georgia,Palatino,serif';
+  curY = wrapText(ctx, d.acoes[0].texto, PAD, curY, TW, LH);
+  curY += 40;
+  divider(curY); curY += 50;
+
+  // ── REFLEXAO ──
+  curY = sectionLabel('REFLEXAO', curY);
+  ctx.font = 'italic 32px serif';
+  ctx.fillStyle = 'rgba(240,208,128,0.85)';
+  ctx.textAlign = 'left';
+  curY = wrapText(ctx, '"' + d.reflexao + '"', PAD, curY, TW, LH);
+  curY += 60;
+
+  // ── FOOTER ──
+  const footY = Math.max(curY + 80, H - 130);
+  divider(footY - 20);
+  ctx.font = '26px serif';
   ctx.fillStyle = 'rgba(160,122,208,0.7)';
-  ctx.fillText('🌟  AÇÃO IMEDIATA', 100, curY);
-  curY += 50;
-
-  ctx.font = 'italic 33px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(232,224,255,0.85)';
-  curY = wrapText(ctx, d.acoes[0].texto, 100, curY, W - 200, 50);
-  curY += 30;
-
-  // ── divider
-  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
-  curY += 50;
-
-  // ── REFLEXAO
-  ctx.font = '26px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(160,122,208,0.7)';
-  ctx.fillText('🔍  REFLEXÃO', 100, curY);
-  curY += 50;
-
-  ctx.font = 'italic 32px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(240,208,128,0.75)';
-  curY = wrapText(ctx, `"${d.reflexao}"`, 100, curY, W - 200, 50);
-
-  // ── bottom footer
-  const footerY = H - 120;
-  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(120, footerY - 30); ctx.lineTo(W - 120, footerY - 30); ctx.stroke();
-
   ctx.textAlign = 'center';
-  ctx.font = '28px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(160,122,208,0.6)';
-  ctx.fillText('✦  ORÁCULO ASTRAL  ✦', W / 2, footerY + 10);
-  ctx.font = '22px Georgia,Palatino,serif';
-  ctx.fillStyle = 'rgba(136,120,187,0.45)';
-  ctx.fillText('Consulte os astros e descubra seu caminho', W / 2, footerY + 50);
+  ctx.fillText('* ORACULO ASTRAL *', W/2, footY + 20);
+  ctx.font = '20px serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.5)';
+  ctx.fillText('Consulte os astros e descubra seu caminho', W/2, footY + 58);
 
-  // If content went past canvas height, extend and redraw
-  const neededH = Math.max(1920, curY + 200);
-  if (neededH > 1920) {
-    canvas.height = neededH;
-    // Redraw with new height — recursive call with flag
-    return generateShareImage(d, neededH);
-  }
-
-  // Store blob for sharing
+  // Store blob
   return new Promise(resolve => {
     canvas.toBlob(blob => {
       _shareImageBlob = blob;
@@ -1360,6 +1385,7 @@ async function generateShareImage(d, forcedH) {
     }, 'image/png');
   });
 }
+
 
 function downloadImage() {
   const canvas = document.getElementById('shareCanvas');
@@ -1523,4 +1549,4 @@ window.addEventListener('appinstalled', () => {
 });
 </script>
 </body>
-  </html>
+</html>
