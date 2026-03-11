@@ -1,14 +1,11 @@
-const CACHE_NAME = 'oraculo-astral-v1';
+const CACHE_NAME = 'oraculo-astral-v3';
 const ASSETS = [
-  '/',
-  '/index.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap'
 ];
 
-// Install: cache core assets
+// Install: cache apenas assets estáticos (NÃO o index.html)
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -18,7 +15,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate: clean old caches
+// Activate: apaga TODOS os caches antigos
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -28,16 +25,30 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: cache-first for assets, network-first for API
+// Fetch:
+// - index.html → sempre rede (nunca cache) para pegar atualizações
+// - API Mistral → sempre rede
+// - outros → cache first
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Always go to network for Mistral API calls
-  if (url.hostname.includes('mistral.ai')) {
-    return event.respondWith(fetch(event.request));
+  // Sempre rede para API e fontes
+  if (url.hostname.includes('mistral.ai') || url.hostname.includes('googleapis.com')) {
+    return event.respondWith(fetch(event.request).catch(() => new Response('')));
   }
 
-  // Cache-first for everything else
+  // Sempre rede para index.html — garante atualizações imediatas
+  if (url.pathname === '/' || url.pathname.endsWith('index.html')) {
+    return event.respondWith(
+      fetch(event.request).then(response => {
+        const toCache = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, toCache));
+        return response;
+      }).catch(() => caches.match('/index.html'))
+    );
+  }
+
+  // Cache first para ícones e manifest
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -46,7 +57,7 @@ self.addEventListener('fetch', event => {
         const toCache = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, toCache));
         return response;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => new Response(''));
     })
   );
 });
