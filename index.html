@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Oráculo Astral</title>
+<!-- ═══ PWA ═══ -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0c0917">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oráculo Astral">
+<meta name="application-name" content="Oráculo Astral">
+<meta name="msapplication-TileColor" content="#0c0917">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<!-- Apple touch icons -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
+<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96.png">
+<!-- Splash screen meta -->
+<meta name="description" content="Os astros revelam o seu caminho. Consulta astral personalizada com IA.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1a1233;
+    --deep: #0c0917;
+    --violet: #6b4fa0;
+    --violet-light: #a07ad0;
+    --violet-dim: #3d2a60;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dim: #6b5320;
+    --star: #e8e0ff;
+    --star-dim: #8878bb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--deep);
+    font-family: 'Crimson Pro', serif;
+    color: var(--star);
+  }
+
+  /* ── STARS BG ── */
+  .stars-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 100% 60% at 50% -5%, rgba(107,79,160,0.3) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 85% 85%, rgba(201,168,76,0.07) 0%, transparent 60%);
+  }
+  .stars-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 38% 6%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 52% 28%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 67% 10%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 81% 42%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 14% 68%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 33% 82%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 72%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 88%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 4%  48%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 46% 52%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 19% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 63% 46%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 44% 80%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    animation: twinkle 5s infinite alternate;
+  }
+  @keyframes twinkle { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.6} }
+
+  /* ── SCREEN SYSTEM ── */
+  .screen {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    overflow-y: auto; overflow-x: hidden;
+    transition: transform 0.5s cubic-bezier(0.77,0,0.175,1), opacity 0.4s ease;
+    will-change: transform, opacity;
+  }
+  .screen.hidden-right  { transform: translateX(100%); opacity: 0; pointer-events: none; }
+  .screen.hidden-left   { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+  .screen.active        { transform: translateX(0); opacity: 1; }
+
+  .screen-inner {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100%;
+  }
+  /* Result screen starts from top so long content is not clipped */
+  #screen6 .screen-inner {
+    justify-content: flex-start;
+    padding-bottom: 5rem;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 3px;
+    background: rgba(107,79,160,0.15);
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--violet), var(--gold));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(201,168,76,0.4);
+  }
+
+  /* ── TOP NAV ── */
+  .top-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+    padding: 0.8rem 1.2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(12,9,23,0.9) 0%, transparent 100%);
+  }
+  .nav-back {
+    width: 36px; height: 36px;
+    border: 1px solid var(--violet-dim);
+    border-radius: 50%;
+    background: rgba(107,79,160,0.12);
+    color: var(--star-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .nav-back.visible { opacity: 1; pointer-events: all; }
+  .nav-back:hover { border-color: var(--violet-light); color: var(--star); }
+
+  .step-label {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.6rem;
+    color: var(--star-dim);
+    letter-spacing: 0.2em;
+  }
+  .step-dots-nav {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .sdot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--violet-dim);
+    transition: all 0.3s;
+  }
+  .sdot.active { background: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.5); width: 18px; border-radius: 3px; }
+  .sdot.done   { background: var(--violet-light); }
+
+  /* ── SHARED STYLES ── */
+  .screen-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(201,168,76,0.4);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  .screen-sub {
+    font-style: italic;
+    color: var(--star-dim);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+  .sigil-big {
+    font-size: 3.5rem;
+    display: block;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(107,79,160,0.8));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+    margin: 1.5rem 0;
+  }
+
+  /* ── SIGN GRID ── */
+  .sign-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .sign-card {
+    border: 1px solid var(--violet-dim);
+    border-radius: 8px;
+    padding: 0.7rem 0.3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(107,79,160,0.05);
+  }
+  .sign-card:hover, .sign-card:active { border-color: var(--violet-light); background: rgba(107,79,160,0.18); transform: translateY(-2px); }
+  .sign-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); box-shadow: 0 0 18px rgba(201,168,76,0.2); }
+  .sign-symbol { font-size: 1.6rem; display: block; }
+  .sign-name   { font-size: 0.58rem; letter-spacing: 0.08em; color: var(--star-dim); text-transform: uppercase; margin-top: 0.2rem; font-family: 'Cinzel Decorative', cursive; }
+  .sign-card.selected .sign-name { color: var(--gold); }
+
+  /* ── FIELDS ── */
+  .field-group { margin-bottom: 1.1rem; }
+  .field-label { font-size: 0.72rem; color: var(--star-dim); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+  .field-input, .field-select, .field-textarea {
+    width: 100%;
+    background: rgba(107,79,160,0.1);
+    border: 1px solid var(--violet-dim);
+    color: var(--star);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--violet-light);
+    box-shadow: 0 0 15px rgba(107,79,160,0.2);
+  }
+  .field-select option { background: #1a1233; }
+  .field-textarea { resize: none; line-height: 1.65; }
+
+  /* ── MOOD GRID ── */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.55rem;
+  }
+  .mood-btn {
+    border: 1px solid var(--violet-dim);
+    border-radius: 8px;
+    padding: 0.7rem 0.3rem;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(107,79,160,0.05);
+    transition: all 0.2s;
+  }
+  .mood-btn:hover, .mood-btn:active { border-color: var(--violet-light); background: rgba(107,79,160,0.18); }
+  .mood-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .mood-icon  { font-size: 1.5rem; display: block; }
+  .mood-label { font-size: 0.65rem; color: var(--star-dim); margin-top: 0.25rem; }
+  .mood-btn.selected .mood-label { color: var(--gold); }
+
+  /* ── ENERGY ── */
+  .energy-track { position: relative; }
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--violet), var(--violet-dim));
+    outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 12px rgba(201,168,76,0.5); cursor: pointer;
+  }
+  .energy-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--star-dim); margin-top: 0.5rem; }
+
+  /* ── BIG BUTTON ── */
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(107,79,160,0.5), rgba(60,30,100,0.7));
+    border: 1px solid var(--violet);
+    color: var(--gold-light);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative; overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08), transparent);
+    transform: translateX(-100%); transition: transform 0.6s;
+  }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover { border-color: var(--violet-light); box-shadow: 0 0 30px rgba(107,79,160,0.5); transform: translateY(-2px); }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--violet-dim);
+    color: var(--star-dim);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.7rem;
+  }
+  .btn-ghost:hover { border-color: var(--violet-light); color: var(--star); }
+
+  /* ── LOADING SCREEN ── */
+  .loading-center {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.5rem; flex: 1;
+    text-align: center;
+  }
+  .orbit-ring {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--violet-light);
+    border-right-color: var(--gold-dim);
+    animation: orbit 1.2s linear infinite;
+    position: relative;
+  }
+  .orbit-ring::after {
+    content: '🔮'; position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 2rem;
+    animation: orbit 1.2s linear infinite reverse;
+  }
+  @keyframes orbit { to { transform: rotate(360deg); } }
+  .loading-text { font-style: italic; color: var(--star-dim); font-size: 1rem; animation: pulse 2s ease-in-out infinite; letter-spacing: 0.08em; }
+  .loading-sub  { font-size: 0.82rem; color: var(--violet-dim); letter-spacing: 0.15em; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  /* ── ORACLE RESULT ── */
+  .oracle-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid var(--violet-dim);
+    border-radius: 8px;
+    background: rgba(107,79,160,0.08);
+    margin-bottom: 1.5rem;
+  }
+  .oracle-sign-emoji { font-size: 2.8rem; filter: drop-shadow(0 0 12px rgba(107,79,160,0.7)); }
+  .oracle-name { font-family: 'Cinzel Decorative', cursive; color: var(--gold-light); font-size: 1rem; }
+  .oracle-meta-sub { font-size: 0.8rem; color: var(--star-dim); font-style: italic; margin-top: 0.2rem; }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.62rem;
+    color: var(--violet-light);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(107,79,160,0.2); }
+
+  .oracle-text { font-size: 1.05rem; line-height: 1.85; color: var(--star); font-style: italic; margin-bottom: 1.4rem; }
+
+  .action-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1.4rem; }
+  @media(max-width:400px) { .action-cards { grid-template-columns: 1fr; } }
+  .action-card {
+    border: 1px solid rgba(107,79,160,0.25);
+    border-radius: 8px; padding: 0.9rem;
+    background: rgba(107,79,160,0.07);
+  }
+  .action-card-icon { font-size: 1.3rem; margin-bottom: 0.35rem; display: block; }
+  .action-card-title { font-family: 'Cinzel Decorative', cursive; font-size: 0.55rem; color: var(--gold); letter-spacing: 0.12em; margin-bottom: 0.35rem; }
+  .action-card-text  { font-size: 0.9rem; line-height: 1.6; color: var(--star-dim); }
+
+  .mantra-box {
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px; padding: 1rem 1.2rem;
+    text-align: center;
+    background: rgba(201,168,76,0.05);
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 1.4rem;
+  }
+
+  .chips-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .chip {
+    background: rgba(107,79,160,0.12);
+    border: 1px solid rgba(107,79,160,0.25);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.82rem;
+    color: var(--star-dim);
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+
+  .reflec-box {
+    border-left: 2px solid var(--gold-dim);
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.4rem;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* ── FOLLOW-UP ── */
+  .followup-area {
+    border-top: 1px solid rgba(107,79,160,0.15);
+    padding-top: 1.2rem;
+    margin-top: 0.5rem;
+  }
+  .followup-row { display: flex; gap: 0.6rem; }
+  .followup-row input {
+    flex: 1;
+    background: rgba(107,79,160,0.1);
+    border: 1px solid var(--violet-dim);
+    color: var(--star);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .followup-row input:focus { border-color: var(--violet-light); }
+  .followup-row button {
+    background: rgba(107,79,160,0.2);
+    border: 1px solid var(--violet-dim);
+    color: var(--violet-light);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.6rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .followup-row button:hover { border-color: var(--violet-light); }
+  .followup-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .history-entry {
+    border-left: 2px solid var(--violet-dim);
+    padding: 0.6rem 0.9rem;
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+    color: var(--star-dim);
+    font-style: italic;
+    line-height: 1.7;
+  }
+  .history-q { font-style: normal; font-size: 0.7rem; color: var(--violet-light); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.25rem; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--violet-dim); border-radius: 2px; }
+
+  /* padding top for fixed nav */
+  .screen-inner { padding-top: 4rem; }
+
+  /* ── SHARE ── */
+  .share-section {
+    border-top: 1px solid rgba(107,79,160,0.2);
+    padding-top: 1.4rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .share-card-preview {
+    border: 1px solid var(--violet-dim);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0f0a1e, #1a1035);
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 90px;
+  }
+  .share-card-preview::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(107,79,160,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .scp-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.6rem; }
+  .scp-sign   { font-size: 2rem; }
+  .scp-name   { font-family: 'Cinzel Decorative', cursive; color: var(--gold-light); font-size: 0.9rem; }
+  .scp-date   { font-size: 0.73rem; color: var(--star-dim); font-style: italic; margin-top:0.1rem; }
+  .scp-mantra { font-size: 0.92rem; color: var(--star); font-style: italic; line-height: 1.6; border-left: 2px solid var(--gold-dim); padding-left: 0.8rem; }
+  .scp-footer { font-size: 0.62rem; color: var(--violet-light); letter-spacing: 0.15em; margin-top: 0.8rem; text-align: right; }
+
+  .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .social-btn {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .social-btn:hover { transform: translateY(-2px); filter: brightness(1.15); }
+  .social-btn.whatsapp  { background: rgba(37,211,102,0.1);  border-color: rgba(37,211,102,0.3);   color: #25d366; }
+  .social-btn.twitter   { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); color: #e8e0ff; }
+  .social-btn.instagram { background: rgba(225,48,108,0.1);  border-color: rgba(225,48,108,0.25);  color: #e1306c; }
+  .social-btn.facebook  { background: rgba(66,103,178,0.12); border-color: rgba(66,103,178,0.3);   color: #7b9fe0; }
+  .social-btn.threads   { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); color: #ccc; }
+  .social-btn.copy      { background: rgba(201,168,76,0.1);  border-color: rgba(201,168,76,0.25);  color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="stars-bg"></div>
+
+<!-- PWA Install Banner -->
+<div id="installBanner" style="
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+  background: linear-gradient(135deg, #1a1035, #0f0920);
+  border-top: 1px solid rgba(201,168,76,0.3);
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; gap: 1rem;
+  transform: translateY(120%); opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  box-shadow: 0 -4px 30px rgba(107,79,160,0.3);
+">
+  <img src="icons/icon-96.png" style="width:48px;height:48px;border-radius:12px;flex-shrink:0;">
+  <div style="flex:1;min-width:0;">
+    <div style="font-family:'Cinzel Decorative',cursive;font-size:0.7rem;color:#f0d080;letter-spacing:0.1em;">ORÁCULO ASTRAL</div>
+    <div style="font-size:0.8rem;color:#8878bb;margin-top:0.15rem;">Instalar no seu dispositivo</div>
+  </div>
+  <button onclick="installApp()" style="
+    background:linear-gradient(135deg,rgba(107,79,160,0.6),rgba(60,30,100,0.8));
+    border:1px solid #6b4fa0; color:#f0d080;
+    font-family:'Cinzel Decorative',cursive; font-size:0.6rem;
+    letter-spacing:0.1em; padding:0.55rem 0.9rem; border-radius:6px;
+    cursor:pointer; white-space:nowrap; flex-shrink:0;
+  ">✦ Instalar</button>
+  <button onclick="dismissBanner()" style="
+    background:transparent; border:none; color:#3d2a60;
+    font-size:1.2rem; cursor:pointer; padding:0.2rem; flex-shrink:0;
+    line-height:1;
+  ">✕</button>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar" style="width:14%"></div>
+</div>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <button class="nav-back" id="navBack" onclick="goBack()">←</button>
+  <span class="step-label" id="stepLabel">PASSO 1 DE 6</span>
+  <div class="step-dots-nav">
+    <div class="sdot active" id="sd1"></div>
+    <div class="sdot" id="sd2"></div>
+    <div class="sdot" id="sd3"></div>
+    <div class="sdot" id="sd4"></div>
+    <div class="sdot" id="sd5"></div>
+    <div class="sdot" id="sd6"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 1 — BOAS VINDAS / NOME -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen active" id="screen1">
+  <div class="screen-inner" style="justify-content:center; text-align:center;">
+    <span class="sigil-big">✨</span>
+    <h1 class="screen-title">Oráculo Astral</h1>
+    <p class="screen-sub">Os astros guardam segredos sobre o seu caminho. Deixe-me guiá-lo.</p>
+    <div class="divider"></div>
+    <div class="field-group" style="text-align:left">
+      <label class="field-label">Como posso te chamar?</label>
+      <input class="field-input" id="userName" placeholder="Seu nome..." />
+    </div>
+    <div class="field-group" style="text-align:left">
+      <label class="field-label">Data de nascimento</label>
+      <input class="field-input" id="birthDate" type="date" />
+    </div>
+    <button class="btn-primary" onclick="goToStep(2)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 2 — SIGNO -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen hidden-right" id="screen2">
+  <div class="screen-inner">
+    <h2 class="screen-title">Seu Signo Solar</h2>
+    <p class="screen-sub">Selecione o seu signo ou ele foi detectado pela sua data.</p>
+    <div class="sign-grid" id="signGrid"></div>
+    <div id="signInfo" style="display:none; border:1px solid var(--violet-dim); border-radius:8px; padding:1rem; background:rgba(107,79,160,0.08); margin-bottom:1rem; font-size:0.92rem; line-height:1.7; color:var(--star-dim); font-style:italic;"></div>
+    <button class="btn-primary" id="signNext" onclick="goToStep(3)" disabled>Continuar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 3 — ESTADO EMOCIONAL -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen hidden-right" id="screen3">
+  <div class="screen-inner">
+    <span class="sigil-big" style="font-size:2.2rem; animation:none;">🌙</span>
+    <h2 class="screen-title">Como Você Está</h2>
+    <p class="screen-sub">Os astros precisam sentir sua vibração agora.</p>
+
+    <div class="field-group">
+      <label class="field-label">Estado emocional</label>
+      <div class="mood-grid">
+        <div class="mood-btn" onclick="selectMood(this,'😔 Triste')"><span class="mood-icon">😔</span><div class="mood-label">Triste</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😰 Ansioso')"><span class="mood-icon">😰</span><div class="mood-label">Ansioso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😤 Frustrado')"><span class="mood-icon">😤</span><div class="mood-label">Frustrado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😕 Perdido')"><span class="mood-icon">😕</span><div class="mood-label">Perdido</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😌 Calmo')"><span class="mood-icon">😌</span><div class="mood-label">Calmo</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'🥰 Amoroso')"><span class="mood-icon">🥰</span><div class="mood-label">Amoroso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'💪 Motivado')"><span class="mood-icon">💪</span><div class="mood-label">Motivado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😴 Esgotado')"><span class="mood-icon">😴</span><div class="mood-label">Esgotado</div></div>
+      </div>
+    </div>
+
+    <div class="field-group" style="margin-top:1.2rem">
+      <label class="field-label">Energia hoje — <span id="energyVal" style="color:var(--gold)">5</span>/10</label>
+      <div class="energy-track">
+        <input type="range" id="energySlider" min="1" max="10" value="5" oninput="document.getElementById('energyVal').textContent=this.value">
+        <div class="energy-labels"><span>😞 Exausto</span><span>⚡ Pleno</span></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="moodNext" onclick="goToStep(4)" disabled>Continuar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 4 — O PROBLEMA -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen hidden-right" id="screen4">
+  <div class="screen-inner">
+    <span class="sigil-big" style="font-size:2.2rem; animation:none;">☿</span>
+    <h2 class="screen-title">O Que Pesa no Coração</h2>
+    <p class="screen-sub">Fale livremente. Os astros guardam segredo.</p>
+
+    <div class="field-group">
+      <label class="field-label">Área da vida</label>
+      <select class="field-select" id="lifeArea">
+        <option value="amor e relacionamentos">💗 Amor & Relacionamentos</option>
+        <option value="trabalho e carreira">💼 Trabalho & Carreira</option>
+        <option value="dinheiro e finanças">💰 Dinheiro & Finanças</option>
+        <option value="saúde e bem-estar">🌿 Saúde & Bem-estar</option>
+        <option value="família e vínculos">🏠 Família & Vínculos</option>
+        <option value="autoconhecimento e propósito">🔮 Propósito & Autoconhecimento</option>
+        <option value="amizades e vida social">🤝 Amizades & Vida Social</option>
+        <option value="decisões importantes">⚖️ Decisões Importantes</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Conta o que está acontecendo</label>
+      <textarea class="field-textarea" id="problem" rows="5" placeholder="Descreva o que está vivendo, sentindo ou enfrentando..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Há quanto tempo isso pesa?</label>
+      <select class="field-select" id="duration">
+        <option value="poucos dias">Poucos dias</option>
+        <option value="algumas semanas">Algumas semanas</option>
+        <option value="alguns meses">Alguns meses</option>
+        <option value="mais de um ano">Mais de um ano</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" id="problemNext" onclick="goToStep(5)">Consultar os Astros 🔮</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 5 — LOADING -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen hidden-right" id="screen5">
+  <div class="screen-inner">
+    <div class="loading-center">
+      <div class="orbit-ring"></div>
+      <div>
+        <div class="loading-text" id="loadingText">Alinhando os planetas...</div>
+        <div class="loading-sub" style="margin-top:0.4rem">aguarde um momento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TELA 6 — RESULTADO -->
+<!-- ══════════════════════════════════════ -->
+<div class="screen hidden-right" id="screen6">
+  <div class="screen-inner">
+    <div id="oracleContent"></div>
+    <div class="followup-area">
+      <div class="section-title">💬 Mais Dúvidas?</div>
+      <div class="followup-row">
+        <input type="text" id="followInput" placeholder="Pergunte ao oráculo..." />
+        <button id="followBtn" onclick="sendFollowup()">✦ Enviar</button>
+      </div>
+      <div id="followHistory"></div>
+    </div>
+    <!-- SHARE SECTION -->
+    <div class="share-section">
+      <div class="section-title">📲 Compartilhar Leitura</div>
+      <p style="font-size:0.88rem; color:var(--star-dim); font-style:italic; margin-bottom:1rem; line-height:1.6;">Gere um card visual e compartilhe nos stories ✨</p>
+
+      <!-- Canvas preview -->
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <canvas id="shareCanvas" style="max-width:100%; border-radius:12px; box-shadow:0 8px 40px rgba(107,79,160,0.4); display:block; margin:0 auto;"></canvas>
+      </div>
+
+      <!-- Download + Share buttons -->
+      <button class="btn-primary" onclick="downloadImage()" style="margin-bottom:0.7rem;">
+        ⬇ Salvar Imagem
+      </button>
+
+      <div class="social-grid">
+        <button class="social-btn whatsapp" onclick="shareNative('whatsapp')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </button>
+        <button class="social-btn twitter" onclick="shareNative('twitter')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </button>
+        <button class="social-btn instagram" onclick="shareNative('instagram')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </button>
+        <button class="social-btn facebook" onclick="shareNative('facebook')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+        <button class="social-btn threads" onclick="shareNative('threads')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.821-2.045 1.567-1.52 1.581-3.368 1.581-3.368l.002-.267c0-.018 0-.036-.002-.054v-.049c-.01-1.033-.147-2.1-.807-2.854-.453-.514-1.043-.79-1.8-.833-.076 1.58-.434 2.741-1.09 3.493-.805.926-2.03 1.397-3.645 1.403-1.3-.01-2.412-.34-3.23-.983-.868-.68-1.327-1.657-1.342-2.832.01-1.183.48-2.161 1.364-2.831.858-.648 2.012-.973 3.428-.966.82.005 1.61.073 2.363.203-.07-.42-.208-.789-.41-1.096-.303-.465-.765-.705-1.408-.727-.506-.017-.987.098-1.456.337l-.853-1.785c.745-.37 1.592-.557 2.52-.557 1.436 0 2.586.433 3.42 1.29.849.871 1.293 2.146 1.32 3.79v.024c.003.03.003.06.003.09 0 .012 0 .025-.001.037l-.001.081c0 .015 0 .03.001.044v.054c-.001.09-.002.18-.002.272 0 0 .009 2.702-2.052 4.704-1.755 1.716-4.023 2.553-7.138 2.573zm1.38-11.165c-.877-.004-1.61.17-2.18.52-.52.322-.786.778-.793 1.352.007.566.274 1.019.793 1.35.576.358 1.31.538 2.18.538 1.077-.003 1.88-.33 2.39-.97.403-.5.645-1.245.72-2.219a11.01 11.01 0 00-3.11-.57z"/></svg>
+          Threads
+        </button>
+        <button class="social-btn copy" onclick="shareNative('copy')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar imagem
+        </button>
+      </div>
+      <div id="copyFeedback" style="text-align:center; font-size:0.82rem; color:var(--gold); margin-top:0.7rem; height:1.2rem; transition:opacity 0.3s; opacity:0;">✓ Imagem copiada!</div>
+    </div>
+
+    <button class="btn-ghost" onclick="resetAll()">↺ Nova Consulta</button>
+  </div>
+</div>
+
+<script>
+const MISTRAL_KEY = "PPFL51fXb5g1vUFs9RJMb1b0MeK81CRw";
+const MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions";
+
+// ── DATA ──
+const SIGNS = [
+  { symbol:'♈', name:'Áries',       dates:'21 Mar–19 Abr', element:'Fogo',  ruler:'Marte',    traits:'corajoso, impulsivo, líder' },
+  { symbol:'♉', name:'Touro',       dates:'20 Abr–20 Mai', element:'Terra', ruler:'Vênus',    traits:'estável, sensual, teimoso' },
+  { symbol:'♊', name:'Gêmeos',      dates:'21 Mai–20 Jun', element:'Ar',    ruler:'Mercúrio', traits:'versátil, comunicativo, dual' },
+  { symbol:'♋', name:'Câncer',      dates:'21 Jun–22 Jul', element:'Água',  ruler:'Lua',      traits:'sensível, protetor, intuitivo' },
+  { symbol:'♌', name:'Leão',        dates:'23 Jul–22 Ago', element:'Fogo',  ruler:'Sol',      traits:'generoso, criativo, dramático' },
+  { symbol:'♍', name:'Virgem',      dates:'23 Ago–22 Set', element:'Terra', ruler:'Mercúrio', traits:'analítico, perfeccionista, prestativo' },
+  { symbol:'♎', name:'Libra',       dates:'23 Set–22 Out', element:'Ar',    ruler:'Vênus',    traits:'justo, charmoso, indeciso' },
+  { symbol:'♏', name:'Escorpião',   dates:'23 Out–21 Nov', element:'Água',  ruler:'Plutão',   traits:'intenso, transformador, misterioso' },
+  { symbol:'♐', name:'Sagitário',   dates:'22 Nov–21 Dez', element:'Fogo',  ruler:'Júpiter',  traits:'otimista, aventureiro, filosófico' },
+  { symbol:'♑', name:'Capricórnio', dates:'22 Dez–19 Jan', element:'Terra', ruler:'Saturno',  traits:'ambicioso, disciplinado, pragmático' },
+  { symbol:'♒', name:'Aquário',     dates:'20 Jan–18 Fev', element:'Ar',    ruler:'Urano',    traits:'inovador, humanista, excêntrico' },
+  { symbol:'♓', name:'Peixes',      dates:'19 Fev–20 Mar', element:'Água',  ruler:'Netuno',   traits:'empático, sonhador, espiritual' },
+];
+
+let selectedSign = null, selectedMood = null, conversationHistory = [];
+let currentScreen = 1;
+
+// ── BUILD SIGN GRID ──
+const grid = document.getElementById('signGrid');
+SIGNS.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'sign-card';
+  card.innerHTML = `<span class="sign-symbol">${s.symbol}</span><div class="sign-name">${s.name}</div>`;
+  card.onclick = () => {
+    document.querySelectorAll('.sign-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedSign = s;
+    document.getElementById('signNext').disabled = false;
+    const info = document.getElementById('signInfo');
+    info.style.display = 'block';
+    info.textContent = `${s.symbol} ${s.name} · ${s.element} · Regido por ${s.ruler} · ${s.dates}`;
+  };
+  grid.appendChild(card);
+});
+
+// Auto-detect sign
+document.getElementById('birthDate').addEventListener('change', function() {
+  const d = new Date(this.value + 'T12:00:00');
+  if (!d) return;
+  const detected = detectSign(d.getMonth()+1, d.getDate());
+  if (detected) {
+    document.querySelectorAll('.sign-card').forEach((c, i) => c.classList.toggle('selected', SIGNS[i].name === detected.name));
+    selectedSign = detected;
+  }
+});
+
+function detectSign(m, d) {
+  if ((m===3&&d>=21)||(m===4&&d<=19)) return SIGNS[0];
+  if ((m===4&&d>=20)||(m===5&&d<=20)) return SIGNS[1];
+  if ((m===5&&d>=21)||(m===6&&d<=20)) return SIGNS[2];
+  if ((m===6&&d>=21)||(m===7&&d<=22)) return SIGNS[3];
+  if ((m===7&&d>=23)||(m===8&&d<=22)) return SIGNS[4];
+  if ((m===8&&d>=23)||(m===9&&d<=22)) return SIGNS[5];
+  if ((m===9&&d>=23)||(m===10&&d<=22)) return SIGNS[6];
+  if ((m===10&&d>=23)||(m===11&&d<=21)) return SIGNS[7];
+  if ((m===11&&d>=22)||(m===12&&d<=21)) return SIGNS[8];
+  if ((m===12&&d>=22)||(m===1&&d<=19)) return SIGNS[9];
+  if ((m===1&&d>=20)||(m===2&&d<=18)) return SIGNS[10];
+  return SIGNS[11];
+}
+
+// ── MOOD ──
+function selectMood(el, mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMood = mood;
+  document.getElementById('moodNext').disabled = false;
+}
+
+// ── NAVIGATION ──
+const TOTAL = 6;
+function updateNav(n) {
+  document.getElementById('progressBar').style.width = (n / TOTAL * 100) + '%';
+  document.getElementById('stepLabel').textContent = n < 5 ? `PASSO ${n} DE 4` : n === 5 ? 'CONSULTANDO...' : 'SUA LEITURA';
+  document.getElementById('navBack').className = n > 1 && n !== 5 ? 'nav-back visible' : 'nav-back';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.getElementById('sd' + i);
+    if (i < n)  d.className = 'sdot done';
+    else if (i === n) d.className = 'sdot active';
+    else d.className = 'sdot';
+  }
+}
+
+function transitionTo(from, to, direction='right') {
+  const fEl = document.getElementById('screen' + from);
+  const tEl = document.getElementById('screen' + to);
+  tEl.className = direction === 'right' ? 'screen hidden-right' : 'screen hidden-left';
+  tEl.style.display = '';
+  requestAnimationFrame(() => {
+    fEl.className = direction === 'right' ? 'screen hidden-left' : 'screen hidden-right';
+    tEl.className = 'screen active';
+  });
+  currentScreen = to;
+  updateNav(to);
+  // scroll result to top
+  setTimeout(() => tEl.scrollTop = 0, 100);
+}
+
+function goToStep(n) {
+  // Validation
+  if (n === 2) {
+    if (!document.getElementById('userName').value.trim()) {
+      document.getElementById('userName').focus(); return;
+    }
+  }
+  if (n === 5) {
+    if (!document.getElementById('problem').value.trim()) {
+      document.getElementById('problem').focus(); return;
+    }
+    transitionTo(currentScreen, 5);
+    startOracle();
+    return;
+  }
+  transitionTo(currentScreen, n);
+}
+
+function goBack() {
+  if (currentScreen <= 1 || currentScreen === 5) return;
+  transitionTo(currentScreen, currentScreen - 1, 'left');
+}
+
+// ── LOADING MESSAGES ──
+const loadingMsgs = [
+  'Alinhando os planetas...','Consultando os astros...','Lendo o seu mapa...','Sintonizando as energias...','O cosmos está falando...'
+];
+let loadIdx = 0, loadInterval;
+function startLoadingCycle() {
+  loadIdx = 0;
+  document.getElementById('loadingText').textContent = loadingMsgs[0];
+  loadInterval = setInterval(() => {
+    loadIdx = (loadIdx + 1) % loadingMsgs.length;
+    document.getElementById('loadingText').textContent = loadingMsgs[loadIdx];
+  }, 2200);
+}
+function stopLoadingCycle() { clearInterval(loadInterval); }
+
+// ── ORACLE CALL ──
+function getToday() {
+  return new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+function getMoonPhase() {
+  const phases = ['🌑 Lua Nova','🌒 Crescente','🌓 Quarto Crescente','🌔 Gibosa Crescente','🌕 Lua Cheia','🌖 Gibosa Minguante','🌗 Quarto Minguante','🌘 Minguante'];
+  const d = new Date();
+  return phases[Math.floor(((d.getDate() + d.getMonth()*30) % 30) / 3.75)];
+}
+
+function buildPrompt() {
+  const name = document.getElementById('userName').value || 'querido(a)';
+  const birth = document.getElementById('birthDate').value;
+  const sign = selectedSign;
+  const mood = selectedMood || 'neutro';
+  const energy = document.getElementById('energySlider').value;
+  const area = document.getElementById('lifeArea').value;
+  const problem = document.getElementById('problem').value;
+  const duration = document.getElementById('duration').value;
+
+  return `Você é um astrólogo e guia espiritual experiente, sábio e empático. Responda APENAS em português brasileiro. Use linguagem acolhedora, poética mas prática.
+
+DATA ATUAL: ${getToday()}
+FASE DA LUA: ${getMoonPhase()}
+
+PERFIL:
+- Nome: ${name}
+- Nascimento: ${birth || 'não informado'}
+- Signo: ${sign.name} (${sign.dates}) · Elemento: ${sign.element} · Regente: ${sign.ruler}
+- Características: ${sign.traits}
+
+ESTADO ATUAL:
+- Humor: ${mood}
+- Energia: ${energy}/10
+- Área: ${area}
+- Situação: "${problem}"
+- Duração: ${duration}
+
+Responda APENAS com JSON válido, sem markdown, sem texto fora do JSON:
+
+{
+  "diagnostico": "2-3 frases poéticas sobre o momento astral desta pessoa",
+  "influencias": "2-3 frases sobre influências planetárias para este signo nesta área",
+  "reflexao": "Uma pergunta profunda e transformadora dos astros",
+  "acoes": [
+    {"icone":"🌟","titulo":"Ação Imediata","texto":"O que fazer hoje ou esta semana"},
+    {"icone":"🌱","titulo":"Cultivo Interior","texto":"Trabalho interno necessário"},
+    {"icone":"⚡","titulo":"Cuidado Astral","texto":"O que evitar ou de que se proteger"},
+    {"icone":"🔮","titulo":"Horizonte","texto":"O que os astros prometem para quem agir com consciência"}
+  ],
+  "mantra": "Uma frase curta e poderosa como mantra",
+  "pedras": ["pedra1","pedra2"],
+  "cores": ["cor1","cor2"],
+  "momento_favoravel": "Em que tipo de momento agir nesta questão"
+}`;
+}
+
+async function callMistral(messages) {
+  const res = await fetch(MISTRAL_URL, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${MISTRAL_KEY}` },
+    body: JSON.stringify({ model:'mistral-small-latest', messages, temperature:0.85, max_tokens:900 })
+  });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.message || `HTTP ${res.status}`); }
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
+}
+
+async function startOracle() {
+  startLoadingCycle();
+  const prompt = buildPrompt();
+  const messages = [{ role:'user', content:prompt }];
+  try {
+    const raw = await callMistral(messages);
+    stopLoadingCycle();
+    let data;
+    try { data = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { throw new Error('Resposta inválida do oráculo.'); }
+    conversationHistory = [{ role:'user', content:prompt }, { role:'assistant', content:raw }];
+    renderOracle(data);
+    transitionTo(5, 6);
+  } catch(e) {
+    stopLoadingCycle();
+    document.getElementById('oracleContent').innerHTML = `<p style="color:#c0392b;font-style:italic;padding:1rem;">⚠️ ${e.message}</p>`;
+    transitionTo(5, 6);
+  }
+}
+
+function renderOracle(d) {
+  _shareData = d;
+  const name = document.getElementById('userName').value || 'Querido(a)';
+  const sign = selectedSign;
+  const actionCards = d.acoes.map(a=>`
+    <div class="action-card">
+      <span class="action-card-icon">${a.icone}</span>
+      <div class="action-card-title">${a.titulo}</div>
+      <div class="action-card-text">${a.texto}</div>
+    </div>`).join('');
+  const chips = [...(d.pedras||[]).map(p=>`<div class="chip">💎 ${p}</div>`), ...(d.cores||[]).map(c=>`<div class="chip">🎨 ${c}</div>`)].join('');
+
+  document.getElementById('oracleContent').innerHTML = `
+    <div class="oracle-header">
+      <div class="oracle-sign-emoji">${sign.symbol}</div>
+      <div>
+        <div class="oracle-name">${name} · ${sign.name}</div>
+        <div class="oracle-meta-sub">${getToday()}</div>
+        <div class="oracle-meta-sub">${getMoonPhase()} · ${sign.element} · ${sign.ruler}</div>
+      </div>
+    </div>
+
+    <div class="section-title">🌌 Momento Astral</div>
+    <div class="oracle-text">${d.diagnostico}</div>
+
+    <div class="section-title">🪐 Influências</div>
+    <div class="oracle-text">${d.influencias}</div>
+
+    <div class="section-title">🔍 Reflexão dos Astros</div>
+    <div class="reflec-box">"${d.reflexao}"</div>
+
+    <div class="section-title">⚡ Como Agir Agora</div>
+    <div class="action-cards">${actionCards}</div>
+
+    <div class="section-title">✨ Mantra</div>
+    <div class="mantra-box">"${d.mantra}"</div>
+
+    <div class="section-title">🌠 Aliados</div>
+    <div class="chips-row">${chips}</div>
+    <div class="oracle-text" style="font-size:0.92rem; margin-top:0.5rem;">${d.momento_favoravel}</div>
+  `;
+  // generate share image — wait for fonts to be ready
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => generateShareImage(d));
+  } else {
+    setTimeout(() => generateShareImage(d), 800);
+  }
+}
+
+// ── FOLLOW-UP ──
+async function sendFollowup() {
+  const input = document.getElementById('followInput');
+  const q = input.value.trim();
+  if (!q) return;
+  const btn = document.getElementById('followBtn');
+  btn.disabled = true;
+  const sign = selectedSign;
+  const name = document.getElementById('userName').value || 'você';
+  const ctx = `Você é um astrólogo empático. Usuário: ${name}, signo ${sign.name}. Responda em pt-BR, acolhedor e prático. Máximo 4 frases.`;
+  conversationHistory.push({ role:'user', content:q });
+  const messages = [{ role:'user', content:ctx+'\n\n'+buildPrompt() }, ...conversationHistory.slice(1)];
+  const histDiv = document.getElementById('followHistory');
+  const entry = document.createElement('div');
+  entry.className = 'history-entry';
+  entry.innerHTML = `<div class="history-q">↳ ${q}</div><span>...</span>`;
+  histDiv.appendChild(entry);
+  try {
+    const reply = await callMistral(messages);
+    conversationHistory.push({ role:'assistant', content:reply });
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div>${reply}`;
+    input.value = '';
+  } catch(e) {
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div><span style="color:#c0392b">Erro: ${e.message}</span>`;
+  }
+  btn.disabled = false;
+  input.focus();
+}
+document.getElementById('followInput').addEventListener('keydown', e => { if(e.key==='Enter') sendFollowup(); });
+
+// ── SHARE — CANVAS IMAGE ──
+let _shareData = null;
+let _shareImageBlob = null;
+
+// Wrap text helper
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  let cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) {
+      ctx.fillText(line.trim(), x, cy);
+      line = words[i] + ' ';
+      cy += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line.trim(), x, cy);
+  return cy + lineHeight;
+}
+
+// Wrap text centered — x is the center point
+function wrapTextCenter(ctx, text, cx, y, maxWidth, lineHeight) {
+  const savedAlign = ctx.textAlign;
+  ctx.textAlign = 'center';
+  const words = text.split(' ');
+  let line = '';
+  let cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) {
+      ctx.fillText(line.trim(), cx, cy);
+      line = words[i] + ' ';
+      cy += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line.trim(), cx, cy);
+  ctx.textAlign = savedAlign;
+  return cy + lineHeight;
+}
+
+function drawStars(ctx, W, H) {
+  const stars = [
+    [0.08,0.06],[0.2,0.14],[0.35,0.04],[0.5,0.09],[0.65,0.03],
+    [0.8,0.12],[0.92,0.07],[0.05,0.3],[0.15,0.5],[0.9,0.4],
+    [0.95,0.65],[0.88,0.8],[0.1,0.85],[0.3,0.92],[0.6,0.88],
+    [0.75,0.75],[0.45,0.95],[0.55,0.55],[0.25,0.7],[0.7,0.45],
+  ];
+  stars.forEach(([px, py], i) => {
+    const r = i % 3 === 0 ? 1.5 : 1;
+    const alpha = 0.3 + (i % 5) * 0.12;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(px * W, py * H, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+async function generateShareImage(d, forcedH) {
+  // Ensure fonts are loaded into canvas context on mobile
+  try {
+    const f1 = new FontFace('CanvasSerif', 'local(Georgia), local(Palatino), local(serif)');
+    await f1.load().catch(()=>{});
+  } catch(e) {}
+  // Small delay to let browser settle fonts
+  if (!forcedH) await new Promise(r => setTimeout(r, 100));
+
+  const canvas = document.getElementById('shareCanvas');
+  const W = 1080;
+  const H = forcedH || 1920;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  // Force canvas activation on mobile
+  ctx.fillStyle = '#080511';
+  ctx.fillRect(0, 0, W, H);
+  const name = document.getElementById('userName').value || 'Consulente';
+  const sign = selectedSign;
+  const today = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const moon = getMoonPhase();
+
+  // ── BACKGROUND gradient
+  const bg = ctx.createLinearGradient(0, 0, W * 0.6, H);
+  bg.addColorStop(0,   '#080511');
+  bg.addColorStop(0.4, '#0f0920');
+  bg.addColorStop(1,   '#150c2a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── top glow
+  const glow1 = ctx.createRadialGradient(W/2, 0, 0, W/2, 0, H * 0.55);
+  glow1.addColorStop(0,   'rgba(107,79,160,0.35)');
+  glow1.addColorStop(0.5, 'rgba(107,79,160,0.1)');
+  glow1.addColorStop(1,   'transparent');
+  ctx.fillStyle = glow1;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── bottom gold glow
+  const glow2 = ctx.createRadialGradient(W/2, H, 0, W/2, H, H * 0.45);
+  glow2.addColorStop(0,   'rgba(201,168,76,0.12)');
+  glow2.addColorStop(1,   'transparent');
+  ctx.fillStyle = glow2;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── stars
+  drawStars(ctx, W, H);
+
+  // ── border frame
+  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(40, 40, W - 80, H - 80);
+  ctx.strokeStyle = 'rgba(107,79,160,0.15)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(55, 55, W - 110, H - 110);
+
+  // ── top ornament line
+  ctx.strokeStyle = 'rgba(201,168,76,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, 160); ctx.lineTo(W - 120, 160); ctx.stroke();
+  ctx.fillStyle = 'rgba(201,168,76,0.5)';
+  ctx.font = '28px Georgia,Palatino,serif'; ctx.textAlign = 'center';
+  ctx.fillText('✦  ✧  ✦', W / 2, 155);
+
+  // ── BIG SIGN SYMBOL
+  ctx.font = '160px serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(107,79,160,0.9)';
+  ctx.shadowBlur = 60;
+  ctx.fillStyle = 'rgba(160,122,208,0.9)';
+  ctx.fillText(sign.symbol, W / 2, 400);
+  ctx.shadowBlur = 0;
+
+  // ── NAME + SIGN
+  ctx.font = 'bold 52px Georgia,Palatino,serif';
+  ctx.fillStyle = '#f0d080';
+  ctx.shadowColor = 'rgba(201,168,76,0.5)';
+  ctx.shadowBlur = 20;
+  ctx.fillText(name.toUpperCase(), W / 2, 480);
+  ctx.shadowBlur = 0;
+
+  ctx.font = 'italic 36px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.85)';
+  ctx.fillText(`${sign.name}  ·  ${sign.element}  ·  ${sign.ruler}`, W / 2, 535);
+
+  // ── date + moon
+  ctx.font = '28px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.7)';
+  ctx.fillText(`${today}  ·  ${moon}`, W / 2, 590);
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, 630); ctx.lineTo(W - 120, 630); ctx.stroke();
+
+  // ── DIAGNOSTICO section
+  ctx.textAlign = 'left';
+  ctx.font = '26px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('✦  MOMENTO ASTRAL', 100, 690);
+
+  ctx.font = 'italic 34px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.9)';
+  let curY = wrapText(ctx, d.diagnostico, 100, 740, W - 200, 52);
+
+  curY += 30;
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
+  curY += 50;
+
+  // ── MANTRA box — dynamic height based on text
+  {
+    const mantraText = `"${d.mantra}"`;
+    const mantraFont = 'bold italic 38px Georgia,Palatino,serif';
+    ctx.font = mantraFont;
+    // Measure wrapped lines — same maxWidth as rendering
+    const mantraWords = mantraText.split(' ');
+    const mantraMaxW = W - 240; // 120px padding each side
+    const mantraLH = 52;
+    let mantraLines = 0;
+    let testLine = '';
+    for (let i = 0; i < mantraWords.length; i++) {
+      const test = testLine + mantraWords[i] + ' ';
+      if (ctx.measureText(test).width > mantraMaxW && i > 0) {
+        mantraLines++;
+        testLine = mantraWords[i] + ' ';
+      } else {
+        testLine = test;
+      }
+    }
+    mantraLines++; // last line
+    const boxPad = 60; // extra breathing room
+    const labelH = 70;
+    const boxH = labelH + (mantraLines * mantraLH) + boxPad;
+
+    const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
+    boxGrad.addColorStop(0, 'rgba(107,79,160,0.15)');
+    boxGrad.addColorStop(1, 'rgba(107,79,160,0.05)');
+    ctx.fillStyle = boxGrad;
+    ctx.beginPath();
+    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(80, curY, W - 160, boxH, 16);
+    ctx.stroke();
+
+    ctx.font = '22px Georgia,Palatino,serif';
+    ctx.fillStyle = 'rgba(201,168,76,0.7)';
+    ctx.textAlign = 'center';
+    ctx.fillText('✨  MANTRA', W / 2, curY + 44);
+
+    ctx.font = mantraFont;
+    ctx.fillStyle = '#f0d080';
+    ctx.shadowColor = 'rgba(201,168,76,0.4)';
+    ctx.shadowBlur = 15;
+    ctx.textAlign = 'center';
+    // wrapText centered: pass center X, and adjust wrapText to use center alignment
+    wrapTextCenter(ctx, mantraText, W / 2, curY + labelH + 10, mantraMaxW, mantraLH);
+    ctx.shadowBlur = 0;
+    curY += boxH + 50;
+  }
+
+  // ── AÇÃO IMEDIATA
+  ctx.textAlign = 'left';
+  ctx.font = '26px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('🌟  AÇÃO IMEDIATA', 100, curY);
+  curY += 50;
+
+  ctx.font = 'italic 33px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.85)';
+  curY = wrapText(ctx, d.acoes[0].texto, 100, curY, W - 200, 50);
+  curY += 30;
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
+  curY += 50;
+
+  // ── REFLEXAO
+  ctx.font = '26px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('🔍  REFLEXÃO', 100, curY);
+  curY += 50;
+
+  ctx.font = 'italic 32px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(240,208,128,0.75)';
+  curY = wrapText(ctx, `"${d.reflexao}"`, 100, curY, W - 200, 50);
+
+  // ── bottom footer
+  const footerY = H - 120;
+  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, footerY - 30); ctx.lineTo(W - 120, footerY - 30); ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.font = '28px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.6)';
+  ctx.fillText('✦  ORÁCULO ASTRAL  ✦', W / 2, footerY + 10);
+  ctx.font = '22px Georgia,Palatino,serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.45)';
+  ctx.fillText('Consulte os astros e descubra seu caminho', W / 2, footerY + 50);
+
+  // If content went past canvas height, extend and redraw
+  const neededH = Math.max(1920, curY + 200);
+  if (neededH > 1920) {
+    canvas.height = neededH;
+    // Redraw with new height — recursive call with flag
+    return generateShareImage(d, neededH);
+  }
+
+  // Store blob for sharing
+  return new Promise(resolve => {
+    canvas.toBlob(blob => {
+      _shareImageBlob = blob;
+      resolve(blob);
+    }, 'image/png');
+  });
+}
+
+function downloadImage() {
+  const canvas = document.getElementById('shareCanvas');
+  const link = document.createElement('a');
+  const name = document.getElementById('userName').value || 'oraculo';
+  link.download = `oraculo-astral-${name.toLowerCase().replace(/\s+/g,'-')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function shareNative(platform) {
+  if (!_shareData) return;
+  const canvas = document.getElementById('shareCanvas');
+  const sign = selectedSign;
+
+  // Try Web Share API with image (mobile)
+  if (platform !== 'copy' && platform !== 'facebook' && navigator.canShare) {
+    try {
+      const blob = _shareImageBlob || await new Promise(r => canvas.toBlob(r, 'image/png'));
+      _shareImageBlob = blob;
+      const file = new File([blob], 'oraculo-astral.png', { type: 'image/png' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Minha leitura astral — ${sign.name}`,
+          text: `"${_shareData.mantra}" ✨ #OráculoAstral #${sign.name}`
+        });
+        return;
+      }
+    } catch(e) { /* fallback below */ }
+  }
+
+  // Platform-specific fallbacks
+  if (platform === 'copy') {
+    // Copy image to clipboard
+    try {
+      const blob = _shareImageBlob || await new Promise(r => canvas.toBlob(r, 'image/png'));
+      _shareImageBlob = blob;
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      const fb = document.getElementById('copyFeedback');
+      fb.style.opacity = '1';
+      setTimeout(() => fb.style.opacity = '0', 2500);
+    } catch(e) {
+      // fallback: download instead
+      downloadImage();
+    }
+    return;
+  }
+
+  if (platform === 'instagram' || platform === 'threads' || platform === 'whatsapp') {
+    // Download image and open app
+    downloadImage();
+    const msgs = {
+      instagram: '📥 Imagem salva!\n\nAbra o Instagram e compartilhe no seu Story ou Feed.',
+      threads: '📥 Imagem salva!\n\nAbra o Threads e publique com a imagem.',
+      whatsapp: '📥 Imagem salva!\n\nAbra o WhatsApp e envie a imagem para seus contatos.'
+    };
+    setTimeout(() => alert(msgs[platform]), 400);
+    return;
+  }
+
+  if (platform === 'twitter') {
+    const text = encodeURIComponent(`${sign.symbol} Minha leitura astral de hoje:\n\n"${_shareData.mantra}"\n\n#OráculoAstral #${sign.name} #Astrologia`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    downloadImage();
+    return;
+  }
+
+  if (platform === 'facebook') {
+    downloadImage();
+    setTimeout(() => alert('📥 Imagem salva!\n\nAbra o Facebook, crie uma publicação e adicione a imagem salva.'), 400);
+  }
+}
+
+function showFeedback(msg) {
+  const fb = document.getElementById('copyFeedback');
+  fb.textContent = msg;
+  fb.style.opacity = '1';
+  setTimeout(() => fb.style.opacity = '0', 2500);
+}
+
+// ── RESET ──
+function resetAll() {
+  selectedSign = null; selectedMood = null; conversationHistory = []; _shareData = null; _shareImageBlob = null;
+  document.getElementById('userName').value = '';
+  document.getElementById('birthDate').value = '';
+  document.getElementById('problem').value = '';
+  document.getElementById('energySlider').value = 5;
+  document.getElementById('energyVal').textContent = '5';
+  document.getElementById('followInput').value = '';
+  document.getElementById('followHistory').innerHTML = '';
+  document.getElementById('oracleContent').innerHTML = '';
+  document.getElementById('signNext').disabled = true;
+  document.getElementById('moodNext').disabled = true;
+  document.querySelectorAll('.sign-card,.mood-btn').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('signInfo').style.display = 'none';
+
+  // send all screens right, show screen1
+  for (let i=1; i<=TOTAL; i++) {
+    const s = document.getElementById('screen'+i);
+    s.className = i===1 ? 'screen active' : 'screen hidden-right';
+  }
+  currentScreen = 1;
+  updateNav(1);
+}
+</script>
+
+<script>
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ SW registrado:', reg.scope))
+      .catch(err => console.log('SW erro:', err));
+  });
+}
+
+// PWA Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show install banner after 3 seconds if not installed
+  setTimeout(() => {
+    if (deferredPrompt) showInstallBanner();
+  }, 3000);
+});
+
+function showInstallBanner() {
+  const banner = document.getElementById('installBanner');
+  if (banner) {
+    banner.style.transform = 'translateY(0)';
+    banner.style.opacity = '1';
+  }
+}
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') {
+      console.log('PWA instalada!');
+    }
+    deferredPrompt = null;
+    dismissBanner();
+  });
+}
+
+function dismissBanner() {
+  const banner = document.getElementById('installBanner');
+  if (banner) {
+    banner.style.transform = 'translateY(120%)';
+    banner.style.opacity = '0';
+    setTimeout(() => banner.remove(), 400);
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  dismissBanner();
+  deferredPrompt = null;
+});
+</script>
+</body>
+  </html>
