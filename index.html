@@ -1039,6 +1039,28 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   return cy + lineHeight;
 }
 
+// Wrap text centered — x is the center point
+function wrapTextCenter(ctx, text, cx, y, maxWidth, lineHeight) {
+  const savedAlign = ctx.textAlign;
+  ctx.textAlign = 'center';
+  const words = text.split(' ');
+  let line = '';
+  let cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) {
+      ctx.fillText(line.trim(), cx, cy);
+      line = words[i] + ' ';
+      cy += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line.trim(), cx, cy);
+  ctx.textAlign = savedAlign;
+  return cy + lineHeight;
+}
+
 function drawStars(ctx, W, H) {
   const stars = [
     [0.08,0.06],[0.2,0.14],[0.35,0.04],[0.5,0.09],[0.65,0.03],
@@ -1167,9 +1189,9 @@ async function generateShareImage(d, forcedH) {
     const mantraText = `"${d.mantra}"`;
     const mantraFont = 'bold italic 38px Georgia, serif';
     ctx.font = mantraFont;
-    // Measure wrapped lines
+    // Measure wrapped lines — same maxWidth as rendering
     const mantraWords = mantraText.split(' ');
-    const mantraMaxW = W - 240;
+    const mantraMaxW = W - 240; // 120px padding each side
     const mantraLH = 52;
     let mantraLines = 0;
     let testLine = '';
@@ -1183,8 +1205,8 @@ async function generateShareImage(d, forcedH) {
       }
     }
     mantraLines++; // last line
-    const boxPad = 50;
-    const labelH = 60;
+    const boxPad = 60; // extra breathing room
+    const labelH = 70;
     const boxH = labelH + (mantraLines * mantraLH) + boxPad;
 
     const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
@@ -1209,7 +1231,9 @@ async function generateShareImage(d, forcedH) {
     ctx.fillStyle = '#f0d080';
     ctx.shadowColor = 'rgba(201,168,76,0.4)';
     ctx.shadowBlur = 15;
-    wrapText(ctx, mantraText, W/2 - (W-240)/2, curY + labelH + 10, mantraMaxW, mantraLH);
+    ctx.textAlign = 'center';
+    // wrapText centered: pass center X, and adjust wrapText to use center alignment
+    wrapTextCenter(ctx, mantraText, W / 2, curY + labelH + 10, mantraMaxW, mantraLH);
     ctx.shadowBlur = 0;
     curY += boxH + 50;
   }
