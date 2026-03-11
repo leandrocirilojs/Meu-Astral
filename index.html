@@ -660,42 +660,45 @@
     <!-- SHARE SECTION -->
     <div class="share-section">
       <div class="section-title">📲 Compartilhar Leitura</div>
-      <p style="font-size:0.88rem; color:var(--star-dim); font-style:italic; margin-bottom:1rem; line-height:1.6;">Compartilhe sua mensagem dos astros com o mundo ✨</p>
+      <p style="font-size:0.88rem; color:var(--star-dim); font-style:italic; margin-bottom:1rem; line-height:1.6;">Gere um card visual e compartilhe nos stories ✨</p>
 
-      <!-- Preview card -->
-      <div class="share-card-preview" id="shareCardPreview"></div>
+      <!-- Canvas preview -->
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <canvas id="shareCanvas" style="max-width:100%; border-radius:12px; box-shadow:0 8px 40px rgba(107,79,160,0.4); display:block; margin:0 auto;"></canvas>
+      </div>
 
-      <!-- Social buttons -->
+      <!-- Download + Share buttons -->
+      <button class="btn-primary" onclick="downloadImage()" style="margin-bottom:0.7rem;">
+        ⬇ Salvar Imagem
+      </button>
+
       <div class="social-grid">
-        <button class="social-btn whatsapp" onclick="shareWhatsApp()">
+        <button class="social-btn whatsapp" onclick="shareNative('whatsapp')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           WhatsApp
         </button>
-        <button class="social-btn twitter" onclick="shareTwitter()">
+        <button class="social-btn twitter" onclick="shareNative('twitter')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           X / Twitter
         </button>
-        <button class="social-btn instagram" onclick="shareInstagram()">
+        <button class="social-btn instagram" onclick="shareNative('instagram')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           Instagram
         </button>
-        <button class="social-btn facebook" onclick="shareFacebook()">
+        <button class="social-btn facebook" onclick="shareNative('facebook')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
           Facebook
         </button>
-        <button class="social-btn threads" onclick="shareThreads()">
+        <button class="social-btn threads" onclick="shareNative('threads')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.821-2.045 1.567-1.52 1.581-3.368 1.581-3.368l.002-.267c0-.018 0-.036-.002-.054v-.049c-.01-1.033-.147-2.1-.807-2.854-.453-.514-1.043-.79-1.8-.833-.076 1.58-.434 2.741-1.09 3.493-.805.926-2.03 1.397-3.645 1.403-1.3-.01-2.412-.34-3.23-.983-.868-.68-1.327-1.657-1.342-2.832.01-1.183.48-2.161 1.364-2.831.858-.648 2.012-.973 3.428-.966.82.005 1.61.073 2.363.203-.07-.42-.208-.789-.41-1.096-.303-.465-.765-.705-1.408-.727-.506-.017-.987.098-1.456.337l-.853-1.785c.745-.37 1.592-.557 2.52-.557 1.436 0 2.586.433 3.42 1.29.849.871 1.293 2.146 1.32 3.79v.024c.003.03.003.06.003.09 0 .012 0 .025-.001.037l-.001.081c0 .015 0 .03.001.044v.054c-.001.09-.002.18-.002.272 0 0 .009 2.702-2.052 4.704-1.755 1.716-4.023 2.553-7.138 2.573zm1.38-11.165c-.877-.004-1.61.17-2.18.52-.52.322-.786.778-.793 1.352.007.566.274 1.019.793 1.35.576.358 1.31.538 2.18.538 1.077-.003 1.88-.33 2.39-.97.403-.5.645-1.245.72-2.219a11.01 11.01 0 00-3.11-.57z"/></svg>
           Threads
         </button>
-        <button class="social-btn copy" onclick="copyText()">
+        <button class="social-btn copy" onclick="shareNative('copy')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copiar texto
+          Copiar imagem
         </button>
       </div>
-
-      <!-- Hidden canvas for image generation -->
-      <canvas id="shareCanvas" style="display:none"></canvas>
-      <div id="copyFeedback" style="text-align:center; font-size:0.82rem; color:var(--gold); margin-top:0.6rem; height:1.2rem; transition:opacity 0.3s; opacity:0;">✓ Copiado!</div>
+      <div id="copyFeedback" style="text-align:center; font-size:0.82rem; color:var(--gold); margin-top:0.7rem; height:1.2rem; transition:opacity 0.3s; opacity:0;">✓ Imagem copiada!</div>
     </div>
 
     <button class="btn-ghost" onclick="resetAll()">↺ Nova Consulta</button>
@@ -973,8 +976,8 @@ function renderOracle(d) {
     <div class="chips-row">${chips}</div>
     <div class="oracle-text" style="font-size:0.92rem; margin-top:0.5rem;">${d.momento_favoravel}</div>
   `;
-  // build share preview card
-  setTimeout(() => buildSharePreview(d), 100);
+  // generate share image card
+  setTimeout(() => generateShareImage(d), 200);
 }
 
 // ── FOLLOW-UP ──
@@ -1007,105 +1010,313 @@ async function sendFollowup() {
 }
 document.getElementById('followInput').addEventListener('keydown', e => { if(e.key==='Enter') sendFollowup(); });
 
-// ── SHARE ──
+// ── SHARE — CANVAS IMAGE ──
 let _shareData = null;
+let _shareImageBlob = null;
 
-function buildShareText(d) {
-  const name = document.getElementById('userName').value || 'Eu';
-  const sign = selectedSign;
-  const moon = getMoonPhase();
-  const today = new Date().toLocaleDateString('pt-BR', { day:'numeric', month:'long', year:'numeric' });
-  return `✨ Oráculo Astral — ${sign.symbol} ${sign.name}
-📅 ${today} · ${moon}
-
-🌌 "${d.diagnostico}"
-
-✨ Mantra: "${d.mantra}"
-
-🌟 Ação: ${d.acoes[0].texto}
-
-🔮 Os astros falam: ${d.acoes[3].texto}
-
-— Consulte o Oráculo Astral`;
+// Wrap text helper
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  let cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) {
+      ctx.fillText(line.trim(), x, cy);
+      line = words[i] + ' ';
+      cy += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  ctx.fillText(line.trim(), x, cy);
+  return cy + lineHeight;
 }
 
-function buildSharePreview(d) {
-  const name = document.getElementById('userName').value || 'Você';
-  const sign = selectedSign;
-  const today = new Date().toLocaleDateString('pt-BR', { day:'numeric', month:'long' });
-  const preview = document.getElementById('shareCardPreview');
-  if (!preview) return;
-  preview.innerHTML = `
-    <div class="scp-header">
-      <span class="scp-sign">${sign.symbol}</span>
-      <div>
-        <div class="scp-name">${name} · ${sign.name}</div>
-        <div class="scp-date">${today} · ${getMoonPhase()}</div>
-      </div>
-    </div>
-    <div class="scp-mantra">"${d.mantra}"</div>
-    <div class="scp-footer">✦ ORÁCULO ASTRAL ✦</div>
-  `;
-}
-
-function shareWhatsApp() {
-  if (!_shareData) return;
-  const text = encodeURIComponent(buildShareText(_shareData));
-  window.open(`https://wa.me/?text=${text}`, '_blank');
-}
-
-function shareTwitter() {
-  if (!_shareData) return;
-  const sign = selectedSign;
-  const text = encodeURIComponent(`${sign.symbol} Minha leitura astral de hoje:\n\n"${_shareData.mantra}"\n\n✨ ${_shareData.acoes[0].texto}\n\n#OráculoAstral #${sign.name} #Astrologia`);
-  window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
-}
-
-function shareInstagram() {
-  if (!_shareData) return;
-  // Instagram doesn't support direct share URLs — copy text and open app
-  const text = buildShareText(_shareData);
-  navigator.clipboard.writeText(text).catch(() => {});
-  alert('📋 Texto copiado!\n\nAbra o Instagram, cole na legenda do seu Story ou Post e compartilhe com seus seguidores ✨');
-}
-
-function shareFacebook() {
-  // Facebook share via sharer (text only works on mobile app deep link)
-  const text = encodeURIComponent(buildShareText(_shareData));
-  window.open(`https://www.facebook.com/sharer/sharer.php?quote=${text}&u=https://oraculo-astral.app`, '_blank');
-}
-
-function shareThreads() {
-  if (!_shareData) return;
-  const sign = selectedSign;
-  const text = encodeURIComponent(`${sign.symbol} Minha leitura astral:\n\n"${_shareData.mantra}"\n\n${_shareData.diagnostico}\n\n#Astrologia #${sign.name}`);
-  window.open(`https://www.threads.net/intent/post?text=${text}`, '_blank');
-}
-
-function copyText() {
-  if (!_shareData) return;
-  const text = buildShareText(_shareData);
-  navigator.clipboard.writeText(text).then(() => {
-    const fb = document.getElementById('copyFeedback');
-    fb.style.opacity = '1';
-    setTimeout(() => { fb.style.opacity = '0'; }, 2500);
-  }).catch(() => {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    const fb = document.getElementById('copyFeedback');
-    fb.style.opacity = '1';
-    setTimeout(() => { fb.style.opacity = '0'; }, 2500);
+function drawStars(ctx, W, H) {
+  const stars = [
+    [0.08,0.06],[0.2,0.14],[0.35,0.04],[0.5,0.09],[0.65,0.03],
+    [0.8,0.12],[0.92,0.07],[0.05,0.3],[0.15,0.5],[0.9,0.4],
+    [0.95,0.65],[0.88,0.8],[0.1,0.85],[0.3,0.92],[0.6,0.88],
+    [0.75,0.75],[0.45,0.95],[0.55,0.55],[0.25,0.7],[0.7,0.45],
+  ];
+  stars.forEach(([px, py], i) => {
+    const r = i % 3 === 0 ? 1.5 : 1;
+    const alpha = 0.3 + (i % 5) * 0.12;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(px * W, py * H, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   });
+}
+
+async function generateShareImage(d) {
+  const canvas = document.getElementById('shareCanvas');
+  const W = 1080, H = 1920; // 9:16 story format
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const name = document.getElementById('userName').value || 'Consulente';
+  const sign = selectedSign;
+  const today = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const moon = getMoonPhase();
+
+  // ── BACKGROUND gradient
+  const bg = ctx.createLinearGradient(0, 0, W * 0.6, H);
+  bg.addColorStop(0,   '#080511');
+  bg.addColorStop(0.4, '#0f0920');
+  bg.addColorStop(1,   '#150c2a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── top glow
+  const glow1 = ctx.createRadialGradient(W/2, 0, 0, W/2, 0, H * 0.55);
+  glow1.addColorStop(0,   'rgba(107,79,160,0.35)');
+  glow1.addColorStop(0.5, 'rgba(107,79,160,0.1)');
+  glow1.addColorStop(1,   'transparent');
+  ctx.fillStyle = glow1;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── bottom gold glow
+  const glow2 = ctx.createRadialGradient(W/2, H, 0, W/2, H, H * 0.45);
+  glow2.addColorStop(0,   'rgba(201,168,76,0.12)');
+  glow2.addColorStop(1,   'transparent');
+  ctx.fillStyle = glow2;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── stars
+  drawStars(ctx, W, H);
+
+  // ── border frame
+  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(40, 40, W - 80, H - 80);
+  ctx.strokeStyle = 'rgba(107,79,160,0.15)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(55, 55, W - 110, H - 110);
+
+  // ── top ornament line
+  ctx.strokeStyle = 'rgba(201,168,76,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, 160); ctx.lineTo(W - 120, 160); ctx.stroke();
+  ctx.fillStyle = 'rgba(201,168,76,0.5)';
+  ctx.font = '28px serif'; ctx.textAlign = 'center';
+  ctx.fillText('✦  ✧  ✦', W / 2, 155);
+
+  // ── BIG SIGN SYMBOL
+  ctx.font = '200px serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(107,79,160,0.9)';
+  ctx.shadowBlur = 60;
+  ctx.fillStyle = 'rgba(160,122,208,0.9)';
+  ctx.fillText(sign.symbol, W / 2, 400);
+  ctx.shadowBlur = 0;
+
+  // ── NAME + SIGN
+  ctx.font = 'bold 52px Georgia, serif';
+  ctx.fillStyle = '#f0d080';
+  ctx.shadowColor = 'rgba(201,168,76,0.5)';
+  ctx.shadowBlur = 20;
+  ctx.fillText(name.toUpperCase(), W / 2, 480);
+  ctx.shadowBlur = 0;
+
+  ctx.font = 'italic 36px Georgia, serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.85)';
+  ctx.fillText(`${sign.name}  ·  ${sign.element}  ·  ${sign.ruler}`, W / 2, 535);
+
+  // ── date + moon
+  ctx.font = '28px Georgia, serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.7)';
+  ctx.fillText(`${today}  ·  ${moon}`, W / 2, 590);
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, 630); ctx.lineTo(W - 120, 630); ctx.stroke();
+
+  // ── DIAGNOSTICO section
+  ctx.textAlign = 'left';
+  ctx.font = '26px Georgia, serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('✦  MOMENTO ASTRAL', 100, 690);
+
+  ctx.font = 'italic 34px Georgia, serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.9)';
+  let curY = wrapText(ctx, d.diagnostico, 100, 740, W - 200, 52);
+
+  curY += 30;
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
+  curY += 50;
+
+  // ── MANTRA box
+  const boxH = 180;
+  const boxGrad = ctx.createLinearGradient(80, curY, W - 80, curY + boxH);
+  boxGrad.addColorStop(0, 'rgba(107,79,160,0.15)');
+  boxGrad.addColorStop(1, 'rgba(107,79,160,0.05)');
+  ctx.fillStyle = boxGrad;
+  ctx.beginPath();
+  ctx.roundRect(80, curY, W - 160, boxH, 16);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(80, curY, W - 160, boxH, 16);
+  ctx.stroke();
+
+  ctx.font = '22px Georgia, serif';
+  ctx.fillStyle = 'rgba(201,168,76,0.7)';
+  ctx.textAlign = 'center';
+  ctx.fillText('✨  MANTRA', W / 2, curY + 44);
+
+  ctx.font = 'bold italic 38px Georgia, serif';
+  ctx.fillStyle = '#f0d080';
+  ctx.shadowColor = 'rgba(201,168,76,0.4)';
+  ctx.shadowBlur = 15;
+  wrapText(ctx, `"${d.mantra}"`, W/2 - (W-240)/2, curY + 95, W - 240, 52);
+  ctx.shadowBlur = 0;
+  curY += boxH + 50;
+
+  // ── AÇÃO IMEDIATA
+  ctx.textAlign = 'left';
+  ctx.font = '26px Georgia, serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('🌟  AÇÃO IMEDIATA', 100, curY);
+  curY += 50;
+
+  ctx.font = 'italic 33px Georgia, serif';
+  ctx.fillStyle = 'rgba(232,224,255,0.85)';
+  curY = wrapText(ctx, d.acoes[0].texto, 100, curY, W - 200, 50);
+  curY += 30;
+
+  // ── divider
+  ctx.strokeStyle = 'rgba(201,168,76,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(100, curY); ctx.lineTo(W - 100, curY); ctx.stroke();
+  curY += 50;
+
+  // ── REFLEXAO
+  ctx.font = '26px Georgia, serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.7)';
+  ctx.fillText('🔍  REFLEXÃO', 100, curY);
+  curY += 50;
+
+  ctx.font = 'italic 32px Georgia, serif';
+  ctx.fillStyle = 'rgba(240,208,128,0.75)';
+  curY = wrapText(ctx, `"${d.reflexao}"`, 100, curY, W - 200, 50);
+
+  // ── bottom footer
+  const footerY = H - 120;
+  ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, footerY - 30); ctx.lineTo(W - 120, footerY - 30); ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.font = '28px Georgia, serif';
+  ctx.fillStyle = 'rgba(160,122,208,0.6)';
+  ctx.fillText('✦  ORÁCULO ASTRAL  ✦', W / 2, footerY + 10);
+  ctx.font = '22px Georgia, serif';
+  ctx.fillStyle = 'rgba(136,120,187,0.45)';
+  ctx.fillText('Consulte os astros e descubra seu caminho', W / 2, footerY + 50);
+
+  // Store blob for sharing
+  return new Promise(resolve => {
+    canvas.toBlob(blob => {
+      _shareImageBlob = blob;
+      resolve(blob);
+    }, 'image/png');
+  });
+}
+
+function downloadImage() {
+  const canvas = document.getElementById('shareCanvas');
+  const link = document.createElement('a');
+  const name = document.getElementById('userName').value || 'oraculo';
+  link.download = `oraculo-astral-${name.toLowerCase().replace(/\s+/g,'-')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function shareNative(platform) {
+  if (!_shareData) return;
+  const canvas = document.getElementById('shareCanvas');
+  const sign = selectedSign;
+
+  // Try Web Share API with image (mobile)
+  if (platform !== 'copy' && platform !== 'facebook' && navigator.canShare) {
+    try {
+      const blob = _shareImageBlob || await new Promise(r => canvas.toBlob(r, 'image/png'));
+      _shareImageBlob = blob;
+      const file = new File([blob], 'oraculo-astral.png', { type: 'image/png' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Minha leitura astral — ${sign.name}`,
+          text: `"${_shareData.mantra}" ✨ #OráculoAstral #${sign.name}`
+        });
+        return;
+      }
+    } catch(e) { /* fallback below */ }
+  }
+
+  // Platform-specific fallbacks
+  if (platform === 'copy') {
+    // Copy image to clipboard
+    try {
+      const blob = _shareImageBlob || await new Promise(r => canvas.toBlob(r, 'image/png'));
+      _shareImageBlob = blob;
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      const fb = document.getElementById('copyFeedback');
+      fb.style.opacity = '1';
+      setTimeout(() => fb.style.opacity = '0', 2500);
+    } catch(e) {
+      // fallback: download instead
+      downloadImage();
+    }
+    return;
+  }
+
+  if (platform === 'instagram' || platform === 'threads' || platform === 'whatsapp') {
+    // Download image and open app
+    downloadImage();
+    const msgs = {
+      instagram: '📥 Imagem salva!\n\nAbra o Instagram e compartilhe no seu Story ou Feed.',
+      threads: '📥 Imagem salva!\n\nAbra o Threads e publique com a imagem.',
+      whatsapp: '📥 Imagem salva!\n\nAbra o WhatsApp e envie a imagem para seus contatos.'
+    };
+    setTimeout(() => alert(msgs[platform]), 400);
+    return;
+  }
+
+  if (platform === 'twitter') {
+    const text = encodeURIComponent(`${sign.symbol} Minha leitura astral de hoje:\n\n"${_shareData.mantra}"\n\n#OráculoAstral #${sign.name} #Astrologia`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    downloadImage();
+    return;
+  }
+
+  if (platform === 'facebook') {
+    downloadImage();
+    setTimeout(() => alert('📥 Imagem salva!\n\nAbra o Facebook, crie uma publicação e adicione a imagem salva.'), 400);
+  }
+}
+
+function showFeedback(msg) {
+  const fb = document.getElementById('copyFeedback');
+  fb.textContent = msg;
+  fb.style.opacity = '1';
+  setTimeout(() => fb.style.opacity = '0', 2500);
 }
 
 // ── RESET ──
 function resetAll() {
-  selectedSign = null; selectedMood = null; conversationHistory = []; _shareData = null;
+  selectedSign = null; selectedMood = null; conversationHistory = []; _shareData = null; _shareImageBlob = null;
   document.getElementById('userName').value = '';
   document.getElementById('birthDate').value = '';
   document.getElementById('problem').value = '';
