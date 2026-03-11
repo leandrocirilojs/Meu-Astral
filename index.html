@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oráculo Astral — Guia de Vida</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1a1233;
+    --deep: #0c0917;
+    --violet: #6b4fa0;
+    --violet-light: #a07ad0;
+    --violet-dim: #3d2a60;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dim: #6b5320;
+    --star: #e8e0ff;
+    --star-dim: #8878bb;
+    --glow-v: rgba(107,79,160,0.3);
+    --glow-g: rgba(201,168,76,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--deep);
+    color: var(--star);
+    font-family: 'Crimson Pro', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 90% 50% at 50% -10%, rgba(107,79,160,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 80%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 60%, rgba(107,79,160,0.1) 0%, transparent 60%);
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 12%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 45%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 48% 55%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 92%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 66% 48%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    pointer-events: none; z-index: 0;
+    animation: twinkle 6s infinite alternate;
+  }
+  @keyframes twinkle {
+    0%   { opacity: 0.6; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+
+  /* Grain */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.35;
+  }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    position: relative; z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
+    position: relative;
+  }
+  .sigil {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(107,79,160,0.8));
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+  .title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.5rem, 5vw, 2.6rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 40px rgba(201,168,76,0.5), 0 2px 4px #000;
+    letter-spacing: 0.06em;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--star-dim);
+    margin-top: 0.5rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+  }
+  header::after {
+    content: '✦ ✧ ✦';
+    display: block;
+    color: var(--gold-dim);
+    letter-spacing: 1.2rem;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* ── STEP INDICATOR ── */
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 2rem 0 1.5rem;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--violet-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.65rem;
+    color: var(--star-dim);
+    background: rgba(107,79,160,0.08);
+    transition: all 0.4s;
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot.active {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    background: rgba(201,168,76,0.12);
+    box-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .step-dot.done {
+    border-color: var(--violet);
+    color: var(--violet-light);
+    background: rgba(107,79,160,0.2);
+  }
+  .step-line {
+    width: 50px; height: 1px;
+    background: var(--violet-dim);
+    transition: background 0.4s;
+  }
+  .step-line.done { background: var(--violet); }
+
+  /* ── PANELS ── */
+  .panel {
+    background: linear-gradient(160deg, rgba(26,18,51,0.97), rgba(12,9,23,0.99));
+    border: 1px solid var(--violet-dim);
+    border-radius: 6px;
+    padding: 1.8rem;
+    position: relative;
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 4px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(107,79,160,0.05);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(107,79,160,0.08);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .panel-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  /* ── SIGN GRID ── */
+  .sign-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.6rem;
+  }
+  @media(max-width:600px) { .sign-grid { grid-template-columns: repeat(4,1fr); } }
+
+  .sign-card {
+    border: 1px solid var(--violet-dim);
+    border-radius: 5px;
+    padding: 0.7rem 0.3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(107,79,160,0.04);
+  }
+  .sign-card:hover {
+    border-color: var(--violet-light);
+    background: rgba(107,79,160,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(107,79,160,0.2);
+  }
+  .sign-card.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+  .sign-symbol { font-size: 1.5rem; display: block; }
+  .sign-name {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--star-dim);
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+    font-family: 'Cinzel Decorative', cursive;
+  }
+  .sign-card.selected .sign-name { color: var(--gold); }
+
+  /* ── DATE INPUT ── */
+  .date-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .date-row .field-group { flex: 1; min-width: 140px; }
+
+  /* ── FIELDS ── */
+  .field-group { margin-bottom: 1rem; }
+  .field-label {
+    font-size: 0.73rem;
+    color: var(--star-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .field-input, .field-select, .field-textarea {
+    width: 100%;
+    background: rgba(107,79,160,0.08);
+    border: 1px solid var(--violet-dim);
+    color: var(--star);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--violet-light);
+    box-shadow: 0 0 15px rgba(107,79,160,0.2);
+  }
+  .field-select option { background: #1a1233; }
+  .field-textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+  }
+
+  /* ── MOOD SELECTOR ── */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  @media(max-width:500px) { .mood-grid { grid-template-columns: repeat(2,1fr); } }
+  .mood-btn {
+    border: 1px solid var(--violet-dim);
+    border-radius: 5px;
+    padding: 0.6rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(107,79,160,0.04);
+    transition: all 0.2s;
+    font-family: 'Crimson Pro', serif;
+  }
+  .mood-btn:hover { border-color: var(--violet-light); background: rgba(107,79,160,0.15); }
+  .mood-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .mood-icon { font-size: 1.4rem; display: block; }
+  .mood-label { font-size: 0.75rem; color: var(--star-dim); margin-top: 0.2rem; letter-spacing: 0.05em; }
+  .mood-btn.selected .mood-label { color: var(--gold); }
+
+  /* ── ENERGY SLIDER ── */
+  .energy-wrap { position: relative; padding-bottom: 0.3rem; }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--violet), var(--violet-dim));
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(201,168,76,0.5);
+    cursor: pointer;
+  }
+  .energy-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--star-dim);
+    margin-top: 0.4rem;
+  }
+
+  /* ── ORACLE BUTTON ── */
+  .oracle-btn {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(107,79,160,0.4), rgba(60,30,100,0.6));
+    border: 1px solid var(--violet);
+    color: var(--gold-light);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    padding: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .oracle-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.08) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .oracle-btn:hover::before { transform: translateX(100%); }
+  .oracle-btn:hover {
+    border-color: var(--violet-light);
+    box-shadow: 0 0 30px rgba(107,79,160,0.5), inset 0 0 20px rgba(107,79,160,0.1);
+    transform: translateY(-2px);
+  }
+  .oracle-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── ORACLE RESPONSE ── */
+  .oracle-panel {
+    display: none;
+    animation: fadeUp 0.6s ease both;
+  }
+  .oracle-panel.visible { display: block; }
+
+  .oracle-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(107,79,160,0.2);
+  }
+  .oracle-sign-big { font-size: 3rem; filter: drop-shadow(0 0 15px rgba(107,79,160,0.8)); }
+  .oracle-meta { flex: 1; }
+  .oracle-name {
+    font-family: 'Cinzel Decorative', cursive;
+    color: var(--gold-light);
+    font-size: 1.1rem;
+  }
+  .oracle-date { font-size: 0.85rem; color: var(--star-dim); font-style: italic; margin-top: 0.2rem; }
+
+  .oracle-section {
+    margin-bottom: 1.4rem;
+  }
+  .oracle-section-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.65rem;
+    color: var(--violet-light);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .oracle-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(107,79,160,0.2);
+  }
+  .oracle-text {
+    font-size: 1.08rem;
+    line-height: 1.85;
+    color: var(--star);
+    font-style: italic;
+  }
+  .oracle-text strong {
+    font-style: normal;
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* ── ACTION CARDS ── */
+  .action-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  @media(max-width:500px) { .action-cards { grid-template-columns: 1fr; } }
+  .action-card {
+    border: 1px solid rgba(107,79,160,0.3);
+    border-radius: 5px;
+    padding: 1rem;
+    background: rgba(107,79,160,0.06);
+  }
+  .action-card-icon { font-size: 1.4rem; margin-bottom: 0.4rem; display: block; }
+  .action-card-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.6rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+  }
+  .action-card-text { font-size: 0.93rem; line-height: 1.6; color: var(--star-dim); }
+
+  /* ── PLANETS ── */
+  .planets-row {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .planet-chip {
+    background: rgba(107,79,160,0.12);
+    border: 1px solid rgba(107,79,160,0.25);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--star-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .planet-chip span { color: var(--violet-light); }
+
+  /* ── LOADING ── */
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  .loading-orbit {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--violet-light);
+    border-right-color: var(--gold-dim);
+    animation: orbit 1.2s linear infinite;
+  }
+  @keyframes orbit { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-style: italic;
+    color: var(--star-dim);
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+  /* ── NEW READING BTN ── */
+  .new-btn {
+    background: transparent;
+    border: 1px solid var(--violet-dim);
+    color: var(--star-dim);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+    display: block;
+    width: 100%;
+  }
+  .new-btn:hover { border-color: var(--violet-light); color: var(--star); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--deep); }
+  ::-webkit-scrollbar-thumb { background: var(--violet-dim); border-radius: 3px; }
+
+  /* ── FOLLOW-UP ── */
+  .followup-wrap {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(107,79,160,0.15);
+  }
+  .followup-wrap input {
+    flex: 1;
+    background: rgba(107,79,160,0.08);
+    border: 1px solid var(--violet-dim);
+    color: var(--star);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .followup-wrap input:focus { border-color: var(--violet-light); }
+  .followup-wrap button {
+    background: rgba(107,79,160,0.2);
+    border: 1px solid var(--violet-dim);
+    color: var(--violet-light);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.65rem;
+    padding: 0.55rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .followup-wrap button:hover { border-color: var(--violet-light); }
+  .followup-wrap button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .history-entry {
+    border-left: 2px solid var(--violet-dim);
+    padding: 0.7rem 1rem;
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+    color: var(--star-dim);
+    font-style: italic;
+    line-height: 1.7;
+  }
+  .history-q {
+    font-style: normal;
+    font-size: 0.72rem;
+    color: var(--violet-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <span class="sigil">✨</span>
+    <div class="title">Oráculo Astral</div>
+    <div class="subtitle">— os astros revelam o caminho —</div>
+  </header>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps">
+    <div class="step">
+      <div class="step-dot active" id="dot1">I</div>
+    </div>
+    <div class="step">
+      <div class="step-line" id="line1"></div>
+      <div class="step-dot" id="dot2">II</div>
+    </div>
+    <div class="step">
+      <div class="step-line" id="line2"></div>
+      <div class="step-dot" id="dot3">III</div>
+    </div>
+    <div class="step">
+      <div class="step-line" id="line3"></div>
+      <div class="step-dot" id="dot4">IV</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: SIGNO -->
+  <div class="panel" id="step1">
+    <div class="panel-title">♈ Passo I — Seu Signo Solar</div>
+    <div class="sign-grid" id="signGrid"></div>
+
+    <div style="margin-top:1.2rem">
+      <div class="date-row">
+        <div class="field-group">
+          <label class="field-label">Seu nome</label>
+          <input class="field-input" id="userName" placeholder="Como posso te chamar?" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data de nascimento</label>
+          <input class="field-input" id="birthDate" type="date" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: ESTADO ATUAL -->
+  <div class="panel" id="step2" style="display:none">
+    <div class="panel-title">🌙 Passo II — Como Você Está</div>
+
+    <div class="field-group">
+      <label class="field-label">Como está seu estado emocional agora?</label>
+      <div class="mood-grid">
+        <div class="mood-btn" onclick="selectMood(this,'😔 Triste')"><span class="mood-icon">😔</span><div class="mood-label">Triste</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😰 Ansioso')"><span class="mood-icon">😰</span><div class="mood-label">Ansioso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😤 Frustrado')"><span class="mood-icon">😤</span><div class="mood-label">Frustrado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😕 Perdido')"><span class="mood-icon">😕</span><div class="mood-label">Perdido</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😌 Calmo')"><span class="mood-icon">😌</span><div class="mood-label">Calmo</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'🥰 Amoroso')"><span class="mood-icon">🥰</span><div class="mood-label">Amoroso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'💪 Motivado')"><span class="mood-icon">💪</span><div class="mood-label">Motivado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😴 Esgotado')"><span class="mood-icon">😴</span><div class="mood-label">Esgotado</div></div>
+      </div>
+    </div>
+
+    <div class="field-group" style="margin-top:0.8rem">
+      <label class="field-label">Nível de energia hoje (1 = no fundo, 10 = pleno)</label>
+      <div class="energy-wrap">
+        <input type="range" id="energySlider" min="1" max="10" value="5" oninput="updateEnergy(this.value)">
+        <div class="energy-labels">
+          <span>1 — Exausto</span>
+          <span id="energyVal" style="color:var(--gold)">5</span>
+          <span>10 — Pleno</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: PROBLEMA -->
+  <div class="panel" id="step3" style="display:none">
+    <div class="panel-title">☿ Passo III — O Que Pesa no Coração</div>
+
+    <div class="field-group">
+      <label class="field-label">Área da vida</label>
+      <select class="field-select" id="lifeArea">
+        <option value="amor e relacionamentos">💗 Amor & Relacionamentos</option>
+        <option value="trabalho e carreira">💼 Trabalho & Carreira</option>
+        <option value="dinheiro e finanças">💰 Dinheiro & Finanças</option>
+        <option value="saúde e bem-estar">🌿 Saúde & Bem-estar</option>
+        <option value="família e vínculos">🏠 Família & Vínculos</option>
+        <option value="autoconhecimento e propósito">🔮 Autoconhecimento & Propósito</option>
+        <option value="amizades e vida social">🤝 Amizades & Vida Social</option>
+        <option value="decisões importantes">⚖️ Decisões Importantes</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Conta o que está acontecendo (seja livre, os astros guardam segredo)</label>
+      <textarea class="field-textarea" id="problem" rows="4" placeholder="Ex: Estou me sentindo preso no trabalho, não sei se devo arriscar uma mudança. Tenho medo de errar e perder a estabilidade que tenho..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Há quanto tempo isso pesa?</label>
+      <select class="field-select" id="duration">
+        <option value="dias">Poucos dias</option>
+        <option value="algumas semanas">Algumas semanas</option>
+        <option value="meses">Alguns meses</option>
+        <option value="mais de um ano">Mais de um ano</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- STEP 4: CONSULTAR -->
+  <div class="panel" id="step4" style="display:none">
+    <div class="panel-title">⭐ Passo IV — Consultar os Astros</div>
+    <p style="font-style:italic; color:var(--star-dim); line-height:1.7; margin-bottom:1.2rem; font-size:0.98rem;">
+      Os planetas estão posicionados e o seu mapa está sendo lido. Toque o cristal para que o oráculo revele o que os astros têm a dizer sobre o seu momento.
+    </p>
+    <button class="oracle-btn" id="oracleBtn" onclick="consultOracle()">
+      🔮 Consultar o Oráculo Astral
+    </button>
+  </div>
+
+  <!-- ORACLE RESPONSE -->
+  <div class="panel oracle-panel" id="oraclePanel">
+    <div id="oracleContent"></div>
+
+    <div class="followup-wrap">
+      <input type="text" id="followInput" placeholder="Tem mais alguma dúvida para o oráculo?" />
+      <button id="followBtn" onclick="sendFollowup()">✦ Perguntar</button>
+    </div>
+
+    <div id="followHistory"></div>
+
+    <button class="new-btn" onclick="resetAll()">↺ Nova Consulta</button>
+  </div>
+
+</div>
+
+<script>
+const MISTRAL_KEY = "PPFL51fXb5g1vUFs9RJMb1b0MeK81CRw";
+const MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions";
+
+// ── SIGNOS ──
+const SIGNS = [
+  { symbol:'♈', name:'Áries',       dates:'21 Mar–19 Abr', element:'Fogo',  ruler:'Marte',    traits:'corajoso, impulsivo, líder' },
+  { symbol:'♉', name:'Touro',       dates:'20 Abr–20 Mai', element:'Terra', ruler:'Vênus',    traits:'estável, sensual, teimoso' },
+  { symbol:'♊', name:'Gêmeos',      dates:'21 Mai–20 Jun', element:'Ar',    ruler:'Mercúrio', traits:'versátil, comunicativo, dual' },
+  { symbol:'♋', name:'Câncer',      dates:'21 Jun–22 Jul', element:'Água',  ruler:'Lua',      traits:'sensível, protetor, intuitivo' },
+  { symbol:'♌', name:'Leão',        dates:'23 Jul–22 Ago', element:'Fogo',  ruler:'Sol',      traits:'generoso, criativo, dramático' },
+  { symbol:'♍', name:'Virgem',      dates:'23 Ago–22 Set', element:'Terra', ruler:'Mercúrio', traits:'analítico, perfeccionista, prestativo' },
+  { symbol:'♎', name:'Libra',       dates:'23 Set–22 Out', element:'Ar',    ruler:'Vênus',    traits:'justo, charmoso, indeciso' },
+  { symbol:'♏', name:'Escorpião',   dates:'23 Out–21 Nov', element:'Água',  ruler:'Plutão',   traits:'intenso, transformador, misterioso' },
+  { symbol:'♐', name:'Sagitário',   dates:'22 Nov–21 Dez', element:'Fogo',  ruler:'Júpiter',  traits:'otimista, aventureiro, filosófico' },
+  { symbol:'♑', name:'Capricórnio', dates:'22 Dez–19 Jan', element:'Terra', ruler:'Saturno',  traits:'ambicioso, disciplinado, pragmático' },
+  { symbol:'♒', name:'Aquário',     dates:'20 Jan–18 Fev', element:'Ar',    ruler:'Urano',    traits:'inovador, humanista, excêntrico' },
+  { symbol:'♓', name:'Peixes',      dates:'19 Fev–20 Mar', element:'Água',  ruler:'Netuno',   traits:'empático, sonhador, espiritual' },
+];
+
+// Build sign grid
+const grid = document.getElementById('signGrid');
+let selectedSign = null;
+SIGNS.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'sign-card';
+  card.innerHTML = `<span class="sign-symbol">${s.symbol}</span><div class="sign-name">${s.name}</div>`;
+  card.onclick = () => {
+    document.querySelectorAll('.sign-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedSign = s;
+    checkStep1();
+  };
+  grid.appendChild(card);
+});
+
+// Auto-detect sign from birthdate
+document.getElementById('birthDate').addEventListener('change', function() {
+  const d = new Date(this.value);
+  if (!d) return;
+  const m = d.getMonth() + 1, day = d.getDate();
+  const detected = detectSign(m, day);
+  if (detected) {
+    document.querySelectorAll('.sign-card').forEach((c, i) => {
+      c.classList.toggle('selected', SIGNS[i].name === detected.name);
+    });
+    selectedSign = detected;
+    checkStep1();
+  }
+});
+
+function detectSign(m, d) {
+  if ((m===3&&d>=21)||(m===4&&d<=19)) return SIGNS[0];
+  if ((m===4&&d>=20)||(m===5&&d<=20)) return SIGNS[1];
+  if ((m===5&&d>=21)||(m===6&&d<=20)) return SIGNS[2];
+  if ((m===6&&d>=21)||(m===7&&d<=22)) return SIGNS[3];
+  if ((m===7&&d>=23)||(m===8&&d<=22)) return SIGNS[4];
+  if ((m===8&&d>=23)||(m===9&&d<=22)) return SIGNS[5];
+  if ((m===9&&d>=23)||(m===10&&d<=22)) return SIGNS[6];
+  if ((m===10&&d>=23)||(m===11&&d<=21)) return SIGNS[7];
+  if ((m===11&&d>=22)||(m===12&&d<=21)) return SIGNS[8];
+  if ((m===12&&d>=22)||(m===1&&d<=19)) return SIGNS[9];
+  if ((m===1&&d>=20)||(m===2&&d<=18)) return SIGNS[10];
+  return SIGNS[11];
+}
+
+function checkStep1() {
+  if (selectedSign) {
+    setTimeout(() => showStep(2), 300);
+  }
+}
+
+// ── MOOD ──
+let selectedMood = null;
+function selectMood(el, mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMood = mood;
+  checkStep2();
+}
+
+function updateEnergy(v) {
+  document.getElementById('energyVal').textContent = v;
+}
+
+function checkStep2() {
+  if (selectedMood) {
+    setTimeout(() => showStep(3), 300);
+  }
+}
+
+// Step 3 → 4 on typing
+let step3Timer;
+document.getElementById('problem').addEventListener('input', function() {
+  clearTimeout(step3Timer);
+  if (this.value.length > 20) {
+    step3Timer = setTimeout(() => showStep(4), 800);
+  }
+});
+
+// ── STEPS ──
+let currentStep = 1;
+function showStep(n) {
+  if (n <= currentStep) return;
+  currentStep = n;
+
+  for (let i = 2; i <= 4; i++) {
+    document.getElementById('step' + i).style.display = i <= n ? 'block' : 'none';
+    if (i <= n) document.getElementById('step' + i).style.animation = 'fadeUp 0.5s ease both';
+  }
+
+  // update dots
+  [1,2,3,4].forEach(i => {
+    const dot = document.getElementById('dot' + i);
+    if (i < n) { dot.className = 'step-dot done'; }
+    else if (i === n) { dot.className = 'step-dot active'; }
+    else { dot.className = 'step-dot'; }
+  });
+  [1,2,3].forEach(i => {
+    const line = document.getElementById('line' + i);
+    line.className = i < n ? 'step-line done' : 'step-line';
+  });
+
+  setTimeout(() => document.getElementById('step' + n).scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+// ── ORACLE ──
+function getToday() {
+  return new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+
+function getMoonPhase() {
+  const phases = ['🌑 Lua Nova','🌒 Lua Crescente','🌓 Quarto Crescente','🌔 Gibosa Crescente','🌕 Lua Cheia','🌖 Gibosa Minguante','🌗 Quarto Minguante','🌘 Lua Minguante'];
+  const d = new Date();
+  const idx = Math.floor(((d.getDate() + d.getMonth() * 30) % 30) / 3.75);
+  return phases[Math.min(idx, 7)];
+}
+
+function buildOraclePrompt() {
+  const name = document.getElementById('userName').value || 'querido(a)';
+  const birth = document.getElementById('birthDate').value;
+  const sign = selectedSign;
+  const mood = selectedMood || 'neutro';
+  const energy = document.getElementById('energySlider').value;
+  const area = document.getElementById('lifeArea').value;
+  const problem = document.getElementById('problem').value;
+  const duration = document.getElementById('duration').value;
+  const today = getToday();
+  const moon = getMoonPhase();
+
+  return `Você é um astrólogo e guia espiritual experiente, sábio e empático. Responda SEMPRE em português brasileiro. Use linguagem acolhedora, poética mas prática.
+
+DATA ATUAL: ${today}
+FASE DA LUA: ${moon}
+
+PERFIL DA PESSOA:
+- Nome: ${name}
+- Data de nascimento: ${birth || 'não informada'}
+- Signo Solar: ${sign.name} (${sign.dates})
+- Elemento: ${sign.element} | Planeta Regente: ${sign.ruler}
+- Características do signo: ${sign.traits}
+
+ESTADO ATUAL:
+- Humor: ${mood}
+- Nível de energia: ${energy}/10
+- Área em questão: ${area}
+- Situação: "${problem}"
+- Há quanto tempo pesa: ${duration}
+
+Com base nesses dados astrológicos e no momento atual da pessoa, forneça uma leitura completa em formato JSON com EXATAMENTE esta estrutura:
+
+{
+  "diagnóstico": "2-3 frases poéticas sobre o momento astral desta pessoa considerando seu signo e estado atual",
+  "influencias": "2-3 frases sobre as influências planetárias atuais para este signo nesta área da vida",
+  "reflexao": "Uma pergunta profunda e transformadora que os astros fazem para esta pessoa refletir",
+  "acoes": [
+    {"icone": "🌟", "titulo": "Ação Imediata", "texto": "O que fazer hoje ou esta semana"},
+    {"icone": "🌱", "titulo": "Cultivo Interior", "texto": "Trabalho interno e autoconhecimento necessário"},
+    {"icone": "⚡", "titulo": "Cuidado Astral", "texto": "O que evitar ou de que se proteger agora"},
+    {"icone": "🔮", "titulo": "Horizonte", "texto": "O que os astros prometem para quem agir com consciência"}
+  ],
+  "mantra": "Uma frase curta e poderosa como mantra para este momento",
+  "pedras": ["pedra1", "pedra2"],
+  "cores": ["cor1", "cor2"],
+  "momento_favoravel": "Em que tipo de momento/dia agir nesta questão"
+}
+
+Retorne APENAS o JSON, sem markdown, sem explicações.`;
+}
+
+let conversationHistory = [];
+
+async function callMistral(messages) {
+  const res = await fetch(MISTRAL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${MISTRAL_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'mistral-small-latest',
+      messages,
+      temperature: 0.82,
+      max_tokens: 1000,
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
+}
+
+async function consultOracle() {
+  const btn = document.getElementById('oracleBtn');
+  btn.disabled = true;
+
+  // show loading
+  const panel = document.getElementById('oraclePanel');
+  panel.className = 'panel oracle-panel visible';
+  document.getElementById('oracleContent').innerHTML = `
+    <div class="loading-wrap">
+      <div class="loading-orbit"></div>
+      <div class="loading-text">Os astros estão se alinhando para você...</div>
+    </div>`;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const prompt = buildOraclePrompt();
+  const messages = [{ role: 'user', content: prompt }];
+
+  try {
+    const raw = await callMistral(messages);
+    let data;
+    try {
+      const clean = raw.replace(/```json|```/g, '').trim();
+      data = JSON.parse(clean);
+    } catch(e) {
+      throw new Error('Resposta do oráculo inválida. Tente novamente.');
+    }
+
+    conversationHistory = [
+      { role: 'user', content: prompt },
+      { role: 'assistant', content: raw }
+    ];
+
+    renderOracle(data);
+  } catch(e) {
+    document.getElementById('oracleContent').innerHTML =
+      `<p style="color:#c0392b;font-style:italic;">⚠️ ${e.message}</p>`;
+    btn.disabled = false;
+  }
+}
+
+function renderOracle(d) {
+  const name = document.getElementById('userName').value || 'Querido(a)';
+  const sign = selectedSign;
+  const today = getToday();
+  const moon = getMoonPhase();
+
+  const actionCards = d.acoes.map(a => `
+    <div class="action-card">
+      <span class="action-card-icon">${a.icone}</span>
+      <div class="action-card-title">${a.titulo}</div>
+      <div class="action-card-text">${a.texto}</div>
+    </div>
+  `).join('');
+
+  const pedras = (d.pedras || []).map(p => `<div class="planet-chip">💎 <span>${p}</span></div>`).join('');
+  const cores = (d.cores || []).map(c => `<div class="planet-chip">🎨 <span>${c}</span></div>`).join('');
+
+  document.getElementById('oracleContent').innerHTML = `
+    <div class="oracle-header">
+      <div class="oracle-sign-big">${sign.symbol}</div>
+      <div class="oracle-meta">
+        <div class="oracle-name">${name} — ${sign.name}</div>
+        <div class="oracle-date">${today} · ${moon}</div>
+        <div class="oracle-date" style="margin-top:0.2rem">${sign.element} · ${sign.ruler} · ${sign.dates}</div>
+      </div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">🌌 Seu Momento Astral</div>
+      <div class="oracle-text">${d['diagnóstico'] || d.diagnostico || ''}</div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">🪐 Influências Planetárias</div>
+      <div class="oracle-text">${d.influencias || ''}</div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">🔍 Reflexão dos Astros</div>
+      <div class="oracle-text" style="font-size:1.1rem; color:var(--gold-light); border-left:2px solid var(--gold-dim); padding-left:1rem;">
+        "${d.reflexao || ''}"
+      </div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">⚡ Como Agir Agora</div>
+      <div class="action-cards">${actionCards}</div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">✨ Mantra para Este Momento</div>
+      <div class="oracle-text" style="font-size:1.15rem; text-align:center; color:var(--gold-light); padding:0.5rem; border:1px solid rgba(201,168,76,0.15); border-radius:4px;">
+        "${d.mantra || ''}"
+      </div>
+    </div>
+
+    <div class="oracle-section">
+      <div class="oracle-section-title">🌠 Aliados & Momento Favorável</div>
+      <div class="planets-row">${pedras}${cores}</div>
+      <div class="oracle-text" style="margin-top:0.8rem; font-size:0.95rem;">${d.momento_favoravel || ''}</div>
+    </div>
+  `;
+}
+
+// ── FOLLOW-UP ──
+async function sendFollowup() {
+  const input = document.getElementById('followInput');
+  const q = input.value.trim();
+  if (!q) return;
+
+  const btn = document.getElementById('followBtn');
+  btn.disabled = true;
+
+  const sign = selectedSign;
+  const name = document.getElementById('userName').value || 'você';
+  const systemContext = `Você é um astrólogo empático. O usuário é ${name}, do signo ${sign.name}. Responda em português brasileiro, de forma acolhedora e prática. Máximo 4 frases.`;
+
+  conversationHistory.push({ role: 'user', content: q });
+
+  const messages = [
+    { role: 'user', content: systemContext + '\n\n' + buildOraclePrompt() },
+    ...conversationHistory.slice(1)
+  ];
+
+  const histDiv = document.getElementById('followHistory');
+  const entry = document.createElement('div');
+  entry.className = 'history-entry';
+  entry.innerHTML = `<div class="history-q">↳ ${q}</div><span style="color:var(--star-dim)">...</span>`;
+  histDiv.appendChild(entry);
+
+  try {
+    const reply = await callMistral(messages);
+    conversationHistory.push({ role: 'assistant', content: reply });
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div>${reply}`;
+    input.value = '';
+  } catch(e) {
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div><span style="color:#c0392b">Erro: ${e.message}</span>`;
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+document.getElementById('followInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendFollowup();
+});
+
+// ── RESET ──
+function resetAll() {
+  selectedSign = null;
+  selectedMood = null;
+  conversationHistory = [];
+  currentStep = 1;
+
+  document.querySelectorAll('.sign-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('userName').value = '';
+  document.getElementById('birthDate').value = '';
+  document.getElementById('problem').value = '';
+  document.getElementById('energySlider').value = 5;
+  document.getElementById('energyVal').textContent = '5';
+  document.getElementById('followInput').value = '';
+  document.getElementById('followHistory').innerHTML = '';
+  document.getElementById('oracleBtn').disabled = false;
+
+  [2,3,4].forEach(i => document.getElementById('step'+i).style.display = 'none');
+  document.getElementById('oraclePanel').className = 'panel oracle-panel';
+
+  [1,2,3,4].forEach(i => {
+    document.getElementById('dot'+i).className = i===1 ? 'step-dot active' : 'step-dot';
+  });
+  [1,2,3].forEach(i => document.getElementById('line'+i).className = 'step-line');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
