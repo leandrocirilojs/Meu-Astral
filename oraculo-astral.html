@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Oráculo Astral</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0c0917">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oráculo Astral">
+<meta name="application-name" content="Oráculo Astral">
+<meta name="description" content="Os astros revelam o seu caminho. Consulta espiritual personalizada com IA.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1a1233;
+    --deep: #0c0917;
+    --violet: #6b4fa0;
+    --violet-light: #a07ad0;
+    --violet-dim: #3d2a60;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dim: #6b5320;
+    --star: #e8e0ff;
+    --star-dim: #8878bb;
+    /* theme accent overrides */
+    --ta: #a07ad0;
+    --ta2: #c9a84c;
+    --tb: rgba(107,79,160,0.3);
+  }
+
+  /* ── RELIGION THEMES ── */
+  body.theme-candomble {
+    --deep: #0d0800; --violet: #b45309; --violet-light: #f59e0b;
+    --violet-dim: #78350f; --gold: #10b981; --gold-light: #6ee7b7;
+    --gold-dim: #065f46; --star: #fef3c7; --star-dim: #d97706;
+    --ta: #f59e0b; --ta2: #10b981; --tb: rgba(180,83,9,0.3);
+  }
+  body.theme-espirita {
+    --deep: #030f1a; --violet: #0369a1; --violet-light: #38bdf8;
+    --violet-dim: #0c4a6e; --gold: #7c3aed; --gold-light: #c4b5fd;
+    --gold-dim: #4c1d95; --star: #e0f2fe; --star-dim: #7dd3fc;
+    --ta: #38bdf8; --ta2: #a78bfa; --tb: rgba(3,105,161,0.3);
+  }
+  body.theme-numerologia {
+    --deep: #0f0a00; --violet: #b45309; --violet-light: #fbbf24;
+    --violet-dim: #78350f; --gold: #dc2626; --gold-light: #fca5a5;
+    --gold-dim: #7f1d1d; --star: #fdf4dc; --star-dim: #fcd34d;
+    --ta: #fbbf24; --ta2: #f87171; --tb: rgba(180,83,9,0.3);
+  }
+  body.theme-santo-daime {
+    --deep: #001a00; --violet: #15803d; --violet-light: #4ade80;
+    --violet-dim: #14532d; --gold: #854d0e; --gold-light: #fde68a;
+    --gold-dim: #713f12; --star: #f0fdf4; --star-dim: #86efac;
+    --ta: #4ade80; --ta2: #fde68a; --tb: rgba(21,128,61,0.3);
+  }
+  body.theme-hinduismo {
+    --deep: #0f0005; --violet: #9d174d; --violet-light: #f472b6;
+    --violet-dim: #831843; --gold: #d97706; --gold-light: #fde68a;
+    --gold-dim: #92400e; --star: #fdf2f8; --star-dim: #f9a8d4;
+    --ta: #f472b6; --ta2: #fbbf24; --tb: rgba(157,23,77,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--deep);
+    font-family: 'Crimson Pro', serif;
+    color: var(--star);
+    transition: background 0.6s, color 0.4s;
+  }
+
+  .stars-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 100% 60% at 50% -5%, var(--tb) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 85% 85%, rgba(201,168,76,0.07) 0%, transparent 60%);
+    transition: background 0.6s;
+  }
+  .stars-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 38% 6%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 52% 28%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 67% 10%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 81% 42%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 14% 68%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 33% 82%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 72%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 88%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 4%  48%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 46% 52%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 19% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 63% 46%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 44% 80%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    animation: twinkle 5s infinite alternate;
+  }
+  @keyframes twinkle { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.6} }
+
+  .screen {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    overflow-y: auto; overflow-x: hidden;
+    transition: transform 0.5s cubic-bezier(0.77,0,0.175,1), opacity 0.4s ease;
+    will-change: transform, opacity;
+  }
+  .screen.hidden-right  { transform: translateX(100%); opacity: 0; pointer-events: none; }
+  .screen.hidden-left   { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+  .screen.active        { transform: translateX(0); opacity: 1; }
+
+  .screen-inner {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100%;
+  }
+  #screen6 .screen-inner, #screen7 .screen-inner {
+    justify-content: flex-start;
+    padding-bottom: 5rem;
+  }
+
+  .progress-bar-wrap {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 3px; background: rgba(107,79,160,0.15);
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--violet), var(--gold));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(201,168,76,0.4);
+  }
+
+  .top-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99;
+    padding: 0.8rem 1.2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(12,9,23,0.9) 0%, transparent 100%);
+  }
+  .nav-back {
+    width: 36px; height: 36px;
+    border: 1px solid var(--violet-dim);
+    border-radius: 50%;
+    background: rgba(107,79,160,0.12);
+    color: var(--star-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    opacity: 0; pointer-events: none;
+  }
+  .nav-back.visible { opacity: 1; pointer-events: all; }
+  .nav-back:hover { border-color: var(--violet-light); color: var(--star); }
+
+  .step-label {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.6rem; color: var(--star-dim); letter-spacing: 0.2em;
+  }
+  .step-dots-nav { display: flex; gap: 6px; align-items: center; }
+  .sdot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--violet-dim); transition: all 0.3s;
+  }
+  .sdot.active { background: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.5); width: 18px; border-radius: 3px; }
+  .sdot.done   { background: var(--violet-light); }
+
+  .screen-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(201,168,76,0.4);
+    line-height: 1.3; margin-bottom: 0.5rem;
+  }
+  .screen-sub {
+    font-style: italic; color: var(--star-dim);
+    font-size: 0.95rem; line-height: 1.6;
+    margin-bottom: 2rem; letter-spacing: 0.05em;
+  }
+  .sigil-big {
+    font-size: 3.5rem; display: block; text-align: center;
+    margin-bottom: 1.2rem;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px var(--tb));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+    margin: 1.5rem 0;
+  }
+
+  /* ── RELIGION SELECTOR (Screen 0) ── */
+  .religion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+  .rel-card {
+    border: 1px solid var(--violet-dim);
+    border-radius: 10px;
+    padding: 1rem 0.6rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: rgba(107,79,160,0.05);
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  }
+  .rel-card:hover { border-color: var(--violet-light); background: rgba(107,79,160,0.15); transform: translateY(-2px); }
+  .rel-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.08); box-shadow: 0 0 18px rgba(201,168,76,0.2); }
+  .rel-icon { font-size: 2rem; }
+  .rel-name { font-family: 'Cinzel Decorative', cursive; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--star-dim); text-transform: uppercase; }
+  .rel-card.selected .rel-name { color: var(--gold); }
+
+  /* ── SIGN GRID ── */
+  .sign-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem; margin-bottom: 1.5rem;
+  }
+  .sign-card {
+    border: 1px solid var(--violet-dim); border-radius: 8px;
+    padding: 0.7rem 0.3rem; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: rgba(107,79,160,0.05);
+  }
+  .sign-card:hover, .sign-card:active { border-color: var(--violet-light); background: rgba(107,79,160,0.18); transform: translateY(-2px); }
+  .sign-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); box-shadow: 0 0 18px rgba(201,168,76,0.2); }
+  .sign-symbol { font-size: 1.6rem; display: block; }
+  .sign-name   { font-size: 0.58rem; letter-spacing: 0.08em; color: var(--star-dim); text-transform: uppercase; margin-top: 0.2rem; font-family: 'Cinzel Decorative', cursive; }
+  .sign-card.selected .sign-name { color: var(--gold); }
+
+  .field-group { margin-bottom: 1.1rem; }
+  .field-label { font-size: 0.72rem; color: var(--star-dim); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; background: rgba(107,79,160,0.1);
+    border: 1px solid var(--violet-dim); color: var(--star);
+    font-family: 'Crimson Pro', serif; font-size: 1.05rem;
+    padding: 0.65rem 0.9rem; border-radius: 6px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--violet-light); box-shadow: 0 0 15px rgba(107,79,160,0.2);
+  }
+  .field-select option { background: #1a1233; }
+  .field-textarea { resize: none; line-height: 1.65; }
+
+  .mood-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.55rem; }
+  .mood-btn {
+    border: 1px solid var(--violet-dim); border-radius: 8px;
+    padding: 0.7rem 0.3rem; text-align: center; cursor: pointer;
+    background: rgba(107,79,160,0.05); transition: all 0.2s;
+  }
+  .mood-btn:hover, .mood-btn:active { border-color: var(--violet-light); background: rgba(107,79,160,0.18); }
+  .mood-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .mood-icon  { font-size: 1.5rem; display: block; }
+  .mood-label { font-size: 0.65rem; color: var(--star-dim); margin-top: 0.25rem; }
+  .mood-btn.selected .mood-label { color: var(--gold); }
+
+  .energy-track { position: relative; }
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--violet), var(--violet-dim));
+    outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 12px rgba(201,168,76,0.5); cursor: pointer;
+  }
+  .energy-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--star-dim); margin-top: 0.5rem; }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(107,79,160,0.5), rgba(60,30,100,0.7));
+    border: 1px solid var(--violet);
+    color: var(--gold-light);
+    font-family: 'Cinzel Decorative', cursive; font-size: 0.78rem;
+    letter-spacing: 0.18em; padding: 1rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.3s;
+    position: relative; overflow: hidden; margin-top: 0.5rem;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.08), transparent);
+    transform: translateX(-100%); transition: transform 0.6s;
+  }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:hover { border-color: var(--violet-light); box-shadow: 0 0 30px rgba(107,79,160,0.5); transform: translateY(-2px); }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    width: 100%; background: transparent;
+    border: 1px solid var(--violet-dim); color: var(--star-dim);
+    font-family: 'Cinzel Decorative', cursive; font-size: 0.65rem;
+    letter-spacing: 0.15em; padding: 0.75rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; margin-top: 0.7rem;
+  }
+  .btn-ghost:hover { border-color: var(--violet-light); color: var(--star); }
+
+  .loading-center {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.5rem; flex: 1; text-align: center;
+  }
+  .orbit-ring {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--violet-light);
+    border-right-color: var(--gold-dim);
+    animation: orbit 1.2s linear infinite; position: relative;
+  }
+  .orbit-ring::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 2rem;
+    animation: orbit 1.2s linear infinite reverse;
+  }
+  @keyframes orbit { to { transform: rotate(360deg); } }
+  .loading-text { font-style: italic; color: var(--star-dim); font-size: 1rem; animation: pulse 2s ease-in-out infinite; letter-spacing: 0.08em; }
+  .loading-sub  { font-size: 0.82rem; color: var(--violet-dim); letter-spacing: 0.15em; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  .oracle-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem; border: 1px solid var(--violet-dim);
+    border-radius: 8px; background: rgba(107,79,160,0.08); margin-bottom: 1.5rem;
+  }
+  .oracle-sign-emoji { font-size: 2.8rem; filter: drop-shadow(0 0 12px var(--tb)); }
+  .oracle-name { font-family: 'Cinzel Decorative', cursive; color: var(--gold-light); font-size: 1rem; }
+  .oracle-meta-sub { font-size: 0.8rem; color: var(--star-dim); font-style: italic; margin-top: 0.2rem; }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', cursive; font-size: 0.62rem;
+    color: var(--violet-light); letter-spacing: 0.2em; margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(107,79,160,0.2); }
+
+  .oracle-text { font-size: 1.05rem; line-height: 1.85; color: var(--star); font-style: italic; margin-bottom: 1.4rem; }
+
+  .action-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1.4rem; }
+  @media(max-width:400px) { .action-cards { grid-template-columns: 1fr; } }
+  .action-card { border: 1px solid rgba(107,79,160,0.25); border-radius: 8px; padding: 0.9rem; background: rgba(107,79,160,0.07); }
+  .action-card-icon  { font-size: 1.3rem; margin-bottom: 0.35rem; display: block; }
+  .action-card-title { font-family: 'Cinzel Decorative', cursive; font-size: 0.55rem; color: var(--gold); letter-spacing: 0.12em; margin-bottom: 0.35rem; }
+  .action-card-text  { font-size: 0.9rem; line-height: 1.6; color: var(--star-dim); }
+
+  .mantra-box {
+    border: 1px solid rgba(201,168,76,0.2); border-radius: 8px;
+    padding: 1rem 1.2rem; text-align: center;
+    background: rgba(201,168,76,0.05); font-size: 1.05rem;
+    color: var(--gold-light); font-style: italic; line-height: 1.6; margin-bottom: 1.4rem;
+  }
+  .chips-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .chip {
+    background: rgba(107,79,160,0.12); border: 1px solid rgba(107,79,160,0.25);
+    border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.82rem;
+    color: var(--star-dim); display: flex; align-items: center; gap: 0.35rem;
+  }
+  .reflec-box {
+    border-left: 2px solid var(--gold-dim); padding: 0.7rem 1rem;
+    margin-bottom: 1.4rem; font-size: 1.05rem; color: var(--gold-light);
+    font-style: italic; line-height: 1.7;
+  }
+
+  .followup-area { border-top: 1px solid rgba(107,79,160,0.15); padding-top: 1.2rem; margin-top: 0.5rem; }
+  .followup-row { display: flex; gap: 0.6rem; }
+  .followup-row input {
+    flex: 1; background: rgba(107,79,160,0.1); border: 1px solid var(--violet-dim);
+    color: var(--star); font-family: 'Crimson Pro', serif; font-size: 1rem;
+    padding: 0.6rem 0.85rem; border-radius: 6px; outline: none; transition: border-color 0.2s;
+  }
+  .followup-row input:focus { border-color: var(--violet-light); }
+  .followup-row button {
+    background: rgba(107,79,160,0.2); border: 1px solid var(--violet-dim);
+    color: var(--violet-light); font-family: 'Cinzel Decorative', cursive; font-size: 0.6rem;
+    padding: 0.6rem 0.9rem; border-radius: 6px; cursor: pointer;
+    letter-spacing: 0.1em; transition: all 0.2s; white-space: nowrap;
+  }
+  .followup-row button:hover { border-color: var(--violet-light); }
+  .followup-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .history-entry {
+    border-left: 2px solid var(--violet-dim); padding: 0.6rem 0.9rem;
+    margin-top: 0.9rem; font-size: 0.95rem; color: var(--star-dim); font-style: italic; line-height: 1.7;
+  }
+  .history-q { font-style: normal; font-size: 0.7rem; color: var(--violet-light); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.25rem; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--violet-dim); border-radius: 2px; }
+  .screen-inner { padding-top: 4rem; }
+
+  .share-section { border-top: 1px solid rgba(107,79,160,0.2); padding-top: 1.4rem; margin-top: 1rem; margin-bottom: 0.5rem; }
+  .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .social-btn {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.7rem 0.85rem; border-radius: 8px; border: 1px solid transparent;
+    font-family: 'Crimson Pro', serif; font-size: 0.9rem; cursor: pointer;
+    transition: all 0.2s; font-weight: 600;
+  }
+  .social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .social-btn:hover { transform: translateY(-2px); filter: brightness(1.15); }
+  .social-btn.whatsapp  { background: rgba(37,211,102,0.1);  border-color: rgba(37,211,102,0.3);   color: #25d366; }
+  .social-btn.twitter   { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); color: #e8e0ff; }
+  .social-btn.instagram { background: rgba(225,48,108,0.1);  border-color: rgba(225,48,108,0.25);  color: #e1306c; }
+  .social-btn.facebook  { background: rgba(66,103,178,0.12); border-color: rgba(66,103,178,0.3);   color: #7b9fe0; }
+  .social-btn.threads   { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); color: #ccc; }
+  .social-btn.copy      { background: rgba(201,168,76,0.1);  border-color: rgba(201,168,76,0.25);  color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="stars-bg"></div>
+
+<!-- PWA Install Banner -->
+<div id="installBanner" style="
+  position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:linear-gradient(135deg,#1a1035,#0f0920);
+  border-top:1px solid rgba(201,168,76,0.3);
+  padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;
+  transform:translateY(120%);opacity:0;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s ease;
+  box-shadow:0 -4px 30px rgba(107,79,160,0.3);">
+  <div style="flex:1;min-width:0;">
+    <div style="font-family:'Cinzel Decorative',cursive;font-size:0.7rem;color:#f0d080;letter-spacing:0.1em;">ORÁCULO ASTRAL</div>
+    <div style="font-size:0.8rem;color:#8878bb;margin-top:0.15rem;">Instalar no seu dispositivo</div>
+  </div>
+  <button onclick="installApp()" style="background:linear-gradient(135deg,rgba(107,79,160,0.6),rgba(60,30,100,0.8));border:1px solid #6b4fa0;color:#f0d080;font-family:'Cinzel Decorative',cursive;font-size:0.6rem;letter-spacing:0.1em;padding:0.55rem 0.9rem;border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;">✦ Instalar</button>
+  <button onclick="dismissBanner()" style="background:transparent;border:none;color:#3d2a60;font-size:1.2rem;cursor:pointer;padding:0.2rem;flex-shrink:0;line-height:1;">✕</button>
+</div>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:12%"></div></div>
+
+<div class="top-nav">
+  <button class="nav-back" id="navBack" onclick="goBack()">←</button>
+  <span class="step-label" id="stepLabel">ESCOLHA SUA TRADIÇÃO</span>
+  <div class="step-dots-nav">
+    <div class="sdot active" id="sd1"></div>
+    <div class="sdot" id="sd2"></div>
+    <div class="sdot" id="sd3"></div>
+    <div class="sdot" id="sd4"></div>
+    <div class="sdot" id="sd5"></div>
+    <div class="sdot" id="sd6"></div>
+    <div class="sdot" id="sd7"></div>
+  </div>
+</div>
+
+<!-- ══ TELA 1 — ESCOLHER RELIGIÃO ══ -->
+<div class="screen active" id="screen1">
+  <div class="screen-inner">
+    <span class="sigil-big" id="mainSigil">✨</span>
+    <h1 class="screen-title">Oráculo Astral</h1>
+    <p class="screen-sub">Escolha a tradição espiritual para sua consulta.</p>
+    <div class="divider"></div>
+    <div class="religion-grid" id="religionGrid">
+      <div class="rel-card selected" data-rel="astrologia" onclick="selectReligion(this)">
+        <span class="rel-icon">⭐</span>
+        <span class="rel-name">Astrologia</span>
+      </div>
+      <div class="rel-card" data-rel="candomble" onclick="selectReligion(this)">
+        <span class="rel-icon">🥁</span>
+        <span class="rel-name">Candomblé & Umbanda</span>
+      </div>
+      <div class="rel-card" data-rel="espirita" onclick="selectReligion(this)">
+        <span class="rel-icon">🕊️</span>
+        <span class="rel-name">Espiritismo</span>
+      </div>
+      <div class="rel-card" data-rel="numerologia" onclick="selectReligion(this)">
+        <span class="rel-icon">🔢</span>
+        <span class="rel-name">Numerologia</span>
+      </div>
+      <div class="rel-card" data-rel="santo-daime" onclick="selectReligion(this)">
+        <span class="rel-icon">🌿</span>
+        <span class="rel-name">Santo Daime & UDV</span>
+      </div>
+      <div class="rel-card" data-rel="hinduismo" onclick="selectReligion(this)">
+        <span class="rel-icon">🕉️</span>
+        <span class="rel-name">Hinduísmo & Vedanta</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="goToStep(2)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ TELA 2 — NOME & DATA ══ -->
+<div class="screen hidden-right" id="screen2">
+  <div class="screen-inner" style="justify-content:center; text-align:center;">
+    <span class="sigil-big" id="nameSigil">✨</span>
+    <h2 class="screen-title" id="nameTitle">Oráculo Astral</h2>
+    <p class="screen-sub" id="nameSub">Os astros guardam segredos sobre o seu caminho.</p>
+    <div class="divider"></div>
+    <div class="field-group" style="text-align:left">
+      <label class="field-label">Como posso te chamar?</label>
+      <input class="field-input" id="userName" placeholder="Seu nome..." />
+    </div>
+    <div class="field-group" style="text-align:left">
+      <label class="field-label">Data de nascimento</label>
+      <input class="field-input" id="birthDate" type="date" />
+    </div>
+    <button class="btn-primary" onclick="goToStep(3)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ TELA 3 — SIGNO ══ -->
+<div class="screen hidden-right" id="screen3">
+  <div class="screen-inner">
+    <h2 class="screen-title" id="step3Title">Seu Signo Solar</h2>
+    <p class="screen-sub" id="step3Sub">Selecione o seu signo ou ele foi detectado pela sua data.</p>
+    <div class="sign-grid" id="signGrid"></div>
+    <div id="signInfo" style="display:none; border:1px solid var(--violet-dim); border-radius:8px; padding:1rem; background:rgba(107,79,160,0.08); margin-bottom:1rem; font-size:0.92rem; line-height:1.7; color:var(--star-dim); font-style:italic;"></div>
+    <button class="btn-primary" id="signNext" onclick="goToStep(4)" disabled>Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ TELA 4 — ESTADO EMOCIONAL ══ -->
+<div class="screen hidden-right" id="screen4">
+  <div class="screen-inner">
+    <span class="sigil-big" style="font-size:2.2rem; animation:none;">🌙</span>
+    <h2 class="screen-title">Como Você Está</h2>
+    <p class="screen-sub" id="step4Sub">Os astros precisam sentir sua vibração agora.</p>
+    <div class="field-group">
+      <label class="field-label">Estado emocional</label>
+      <div class="mood-grid">
+        <div class="mood-btn" onclick="selectMood(this,'😔 Triste')"><span class="mood-icon">😔</span><div class="mood-label">Triste</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😰 Ansioso')"><span class="mood-icon">😰</span><div class="mood-label">Ansioso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😤 Frustrado')"><span class="mood-icon">😤</span><div class="mood-label">Frustrado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😕 Perdido')"><span class="mood-icon">😕</span><div class="mood-label">Perdido</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😌 Calmo')"><span class="mood-icon">😌</span><div class="mood-label">Calmo</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'🥰 Amoroso')"><span class="mood-icon">🥰</span><div class="mood-label">Amoroso</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'💪 Motivado')"><span class="mood-icon">💪</span><div class="mood-label">Motivado</div></div>
+        <div class="mood-btn" onclick="selectMood(this,'😴 Esgotado')"><span class="mood-icon">😴</span><div class="mood-label">Esgotado</div></div>
+      </div>
+    </div>
+    <div class="field-group" style="margin-top:1.2rem">
+      <label class="field-label">Energia hoje — <span id="energyVal" style="color:var(--gold)">5</span>/10</label>
+      <div class="energy-track">
+        <input type="range" id="energySlider" min="1" max="10" value="5" oninput="document.getElementById('energyVal').textContent=this.value">
+        <div class="energy-labels"><span>😞 Exausto</span><span>⚡ Pleno</span></div>
+      </div>
+    </div>
+    <button class="btn-primary" id="moodNext" onclick="goToStep(5)" disabled>Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ TELA 5 — QUESTÃO ══ -->
+<div class="screen hidden-right" id="screen5">
+  <div class="screen-inner">
+    <span class="sigil-big" style="font-size:2.2rem; animation:none;" id="step5Sigil">☿</span>
+    <h2 class="screen-title" id="step5Title">O Que Pesa no Coração</h2>
+    <p class="screen-sub" id="step5Sub">Fale livremente. Os astros guardam segredo.</p>
+    <div class="field-group">
+      <label class="field-label">Área da vida</label>
+      <select class="field-select" id="lifeArea">
+        <option value="amor e relacionamentos">💗 Amor & Relacionamentos</option>
+        <option value="trabalho e carreira">💼 Trabalho & Carreira</option>
+        <option value="dinheiro e finanças">💰 Dinheiro & Finanças</option>
+        <option value="saúde e bem-estar">🌿 Saúde & Bem-estar</option>
+        <option value="família e vínculos">🏠 Família & Vínculos</option>
+        <option value="autoconhecimento e propósito">🔮 Propósito & Autoconhecimento</option>
+        <option value="amizades e vida social">🤝 Amizades & Vida Social</option>
+        <option value="decisões importantes">⚖️ Decisões Importantes</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label" id="problemLabel">Conta o que está acontecendo</label>
+      <textarea class="field-textarea" id="problem" rows="5" placeholder="Descreva o que está vivendo, sentindo ou enfrentando..."></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Há quanto tempo isso pesa?</label>
+      <select class="field-select" id="duration">
+        <option value="poucos dias">Poucos dias</option>
+        <option value="algumas semanas">Algumas semanas</option>
+        <option value="alguns meses">Alguns meses</option>
+        <option value="mais de um ano">Mais de um ano</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="consultBtn" onclick="goToStep(6)">Consultar os Astros 🔮</button>
+  </div>
+</div>
+
+<!-- ══ TELA 6 — LOADING ══ -->
+<div class="screen hidden-right" id="screen6">
+  <div class="screen-inner">
+    <div class="loading-center">
+      <div class="orbit-ring" id="orbitRing"></div>
+      <div>
+        <div class="loading-text" id="loadingText">Alinhando os planetas...</div>
+        <div class="loading-sub" style="margin-top:0.4rem">aguarde um momento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TELA 7 — RESULTADO ══ -->
+<div class="screen hidden-right" id="screen7">
+  <div class="screen-inner">
+    <div id="oracleContent"></div>
+    <div class="followup-area">
+      <div class="section-title">💬 Mais Dúvidas?</div>
+      <div class="followup-row">
+        <input type="text" id="followInput" placeholder="Pergunte ao oráculo..." />
+        <button id="followBtn" onclick="sendFollowup()">✦ Enviar</button>
+      </div>
+      <div id="followHistory"></div>
+    </div>
+    <div class="share-section">
+      <div class="section-title">📲 Compartilhar Leitura</div>
+      <p style="font-size:0.88rem; color:var(--star-dim); font-style:italic; margin-bottom:1rem; line-height:1.6;">Gere um card visual e compartilhe nos stories ✨</p>
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <canvas id="shareCanvas" style="max-width:100%; border-radius:12px; box-shadow:0 8px 40px rgba(107,79,160,0.4); display:block; margin:0 auto;"></canvas>
+      </div>
+      <button class="btn-primary" onclick="downloadImage()" style="margin-bottom:0.7rem;">⬇ Salvar Imagem</button>
+      <div class="social-grid">
+        <button class="social-btn whatsapp" onclick="shareNative('whatsapp')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </button>
+        <button class="social-btn twitter" onclick="shareNative('twitter')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </button>
+        <button class="social-btn instagram" onclick="shareNative('instagram')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </button>
+        <button class="social-btn facebook" onclick="shareNative('facebook')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+        <button class="social-btn threads" onclick="shareNative('threads')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.821-2.045 1.567-1.52 1.581-3.368 1.581-3.368l.002-.267c0-.018 0-.036-.002-.054v-.049c-.01-1.033-.147-2.1-.807-2.854-.453-.514-1.043-.79-1.8-.833-.076 1.58-.434 2.741-1.09 3.493-.805.926-2.03 1.397-3.645 1.403-1.3-.01-2.412-.34-3.23-.983-.868-.68-1.327-1.657-1.342-2.832.01-1.183.48-2.161 1.364-2.831.858-.648 2.012-.973 3.428-.966.82.005 1.61.073 2.363.203-.07-.42-.208-.789-.41-1.096-.303-.465-.765-.705-1.408-.727-.506-.017-.987.098-1.456.337l-.853-1.785c.745-.37 1.592-.557 2.52-.557 1.436 0 2.586.433 3.42 1.29.849.871 1.293 2.146 1.32 3.79v.024c.003.03.003.06.003.09 0 .012 0 .025-.001.037l-.001.081c0 .015 0 .03.001.044v.054c-.001.09-.002.18-.002.272 0 0 .009 2.702-2.052 4.704-1.755 1.716-4.023 2.553-7.138 2.573zm1.38-11.165c-.877-.004-1.61.17-2.18.52-.52.322-.786.778-.793 1.352.007.566.274 1.019.793 1.35.576.358 1.31.538 2.18.538 1.077-.003 1.88-.33 2.39-.97.403-.5.645-1.245.72-2.219a11.01 11.01 0 00-3.11-.57z"/></svg>
+          Threads
+        </button>
+        <button class="social-btn copy" onclick="shareNative('copy')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar imagem
+        </button>
+      </div>
+      <div id="copyFeedback" style="text-align:center;font-size:0.82rem;color:var(--gold);margin-top:0.7rem;height:1.2rem;transition:opacity 0.3s;opacity:0;">✓ Imagem copiada!</div>
+    </div>
+    <button class="btn-ghost" onclick="resetAll()">↺ Nova Consulta</button>
+  </div>
+</div>
+
+<script>
+// ── API ──
+const GROQ_KEY = "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";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+
+// ── RELIGION CONFIG ──
+const RELIGIONS = {
+  astrologia: {
+    theme: '', sigil: '✨', title: 'Oráculo Astral',
+    sub: 'Os astros guardam segredos sobre o seu caminho. Deixe-me guiá-lo.',
+    step3Title: 'Seu Signo Solar', step3Sub: 'Selecione o seu signo ou ele foi detectado pela sua data.',
+    step4Sub: 'Os astros precisam sentir sua vibração agora.',
+    step5Sigil: '☿', step5Title: 'O Que Pesa no Coração', step5Sub: 'Fale livremente. Os astros guardam segredo.',
+    problemLabel: 'Conta o que está acontecendo',
+    consultBtn: 'Consultar os Astros 🔮',
+    loadingMsgs: ['Alinhando os planetas...','Consultando os astros...','Lendo o seu mapa astral...','Sintonizando as energias...','O cosmos está falando...'],
+    loadingEmoji: '🪐',
+    sectionLabels: { main: '🌌 Momento Astral', inf: '🪐 Influências', ref: '🔍 Reflexão dos Astros', ac: '⚡ Como Agir Agora', man: '✨ Mantra', ali: '🌠 Aliados' }
+  },
+  candomble: {
+    theme: 'theme-candomble', sigil: '🥁', title: 'Terreiro Digital',
+    sub: 'Os orixás e guias revelam o seu axé e o seu caminho.',
+    step3Title: 'Seu Signo & Orixá', step3Sub: 'Selecione seu signo — os orixás também regem as estrelas.',
+    step4Sub: 'Seu estado vibratório é sentido pelos orixás.',
+    step5Sigil: '🌿', step5Title: 'O Que Carrega no Peito', step5Sub: 'Abra o coração. Os orixás ouvem com amor.',
+    problemLabel: 'Fale com os orixás o que você está vivendo',
+    consultBtn: 'Consultar os Orixás 🥁',
+    loadingMsgs: ['Chamando os orixás...','Abrindo o axé...','Consultando os guias...','O terreiro está ouvindo...','Os orixás estão respondendo...'],
+    loadingEmoji: '🌿',
+    sectionLabels: { main: '🌿 Seu Axé Atual', inf: '🥁 Influências dos Orixás', ref: '🔍 Mensagem dos Guias', ac: '⚡ Como Agir com Axé', man: '✨ Ponto Cantado', ali: '🌺 Aliados Espirituais' }
+  },
+  espirita: {
+    theme: 'theme-espirita', sigil: '🕊️', title: 'Consulta Espírita',
+    sub: 'Seus guias espirituais revelam sua missão e seu caminho kármico.',
+    step3Title: 'Seu Signo & Missão', step3Sub: 'Seu signo solar revela traços da sua missão encarnada.',
+    step4Sub: 'Seu estado emocional reflete seu perispírito agora.',
+    step5Sigil: '💫', step5Title: 'Sua Questão Kármica', step5Sub: 'Compartilhe o que pesa. Os guias ouvem com amor.',
+    problemLabel: 'Relate sua situação aos guias',
+    consultBtn: 'Consultar os Guias 🕊️',
+    loadingMsgs: ['Conectando com os guias...','Os espíritos estão ouvindo...','Lendo seu carma...','Sua missão sendo revelada...','A luz está chegando...'],
+    loadingEmoji: '💫',
+    sectionLabels: { main: '💫 Seu Momento Espiritual', inf: '🌟 Influências Kármicas', ref: '🔍 Mensagem dos Guias', ac: '⚡ Como Agir com Amor', man: '✨ Afirmação Espírita', ali: '🕊️ Protetores' }
+  },
+  numerologia: {
+    theme: 'theme-numerologia', sigil: '🔢', title: 'Mapa Numerológico',
+    sub: 'Os números revelam sua vibração, destino e ciclos de vida.',
+    step3Title: 'Seu Signo & Número', step3Sub: 'Signo solar combinado com seu número de vida.',
+    step4Sub: 'Sua energia atual ressoa com seus números.',
+    step5Sigil: '∞', step5Title: 'Sua Questão Numerológica', step5Sub: 'Os números do universo têm uma resposta para você.',
+    problemLabel: 'O que os números devem revelar?',
+    consultBtn: 'Revelar os Números ∞',
+    loadingMsgs: ['Calculando seu número de vida...','Analisando os ciclos...','Decodificando seu destino...','Os números revelando tudo...','Sua vibração sendo lida...'],
+    loadingEmoji: '✨',
+    sectionLabels: { main: '🔢 Sua Vibração Atual', inf: '∞ Ciclos Numerológicos', ref: '🔍 O Que os Números Dizem', ac: '⚡ Como Agir Agora', man: '✨ Número Mantra', ali: '🔢 Números Favoráveis' }
+  },
+  'santo-daime': {
+    theme: 'theme-santo-daime', sigil: '🌿', title: 'Luz da Floresta',
+    sub: 'A força da floresta e do Daime revelam seu caminho espiritual.',
+    step3Title: 'Seu Signo & Força', step3Sub: 'Seu signo solar e a força do vegetal caminham juntos.',
+    step4Sub: 'Sua vibração é sentida pela força do Daime.',
+    step5Sigil: '🌱', step5Title: 'Sua Busca Interior', step5Sub: 'A floresta sagrada guarda respostas para quem busca.',
+    problemLabel: 'O que você busca nesta jornada?',
+    consultBtn: 'Beber da Luz 🌿',
+    loadingMsgs: ['A força está chegando...','O vegetal está falando...','A floresta está ouvindo...','Os seres da luz respondendo...','O Daime revela o caminho...'],
+    loadingEmoji: '🌱',
+    sectionLabels: { main: '🌿 Sua Força Atual', inf: '🌱 Influências da Floresta', ref: '🔍 O Que a Força Revela', ac: '⚡ Como Trabalhar Agora', man: '✨ Hino do Momento', ali: '🌿 Aliados da Floresta' }
+  },
+  hinduismo: {
+    theme: 'theme-hinduismo', sigil: '🕉️', title: 'Dharma Jyotish',
+    sub: 'Os Devas e o Dharma revelam sua alma e seu caminho sagrado.',
+    step3Title: 'Seu Signo & Nakshatra', step3Sub: 'Seu signo solar e sua estrela de nascimento revelam seu Dharma.',
+    step4Sub: 'Seu estado reflete o equilíbrio dos seus chakras agora.',
+    step5Sigil: '🪷', step5Title: 'Sua Questão de Dharma', step5Sub: 'Os Devas e os ensinamentos sagrados têm sabedoria para você.',
+    problemLabel: 'Qual questão de Dharma você traz?',
+    consultBtn: 'Consultar os Devas 🕉️',
+    loadingMsgs: ['Om... Conectando com os Devas...','Lendo seu Dharma...','Os Devas estão respondendo...','Acessando o Akashic...','A luz de Brahma chegando...'],
+    loadingEmoji: '🪷',
+    sectionLabels: { main: '🕉️ Seu Dharma Atual', inf: '🪷 Influências dos Devas', ref: '🔍 Ensinamento Sagrado', ac: '⚡ Sua Sadhana Agora', man: '✨ Seu Mantra', ali: '🕉️ Devas Protetores' }
+  }
+};
+
+// ── DATA ──
+const SIGNS = [
+  { symbol:'♈', name:'Áries',       dates:'21 Mar–19 Abr', element:'Fogo',  ruler:'Marte',    traits:'corajoso, impulsivo, líder' },
+  { symbol:'♉', name:'Touro',       dates:'20 Abr–20 Mai', element:'Terra', ruler:'Vênus',    traits:'estável, sensual, teimoso' },
+  { symbol:'♊', name:'Gêmeos',      dates:'21 Mai–20 Jun', element:'Ar',    ruler:'Mercúrio', traits:'versátil, comunicativo, dual' },
+  { symbol:'♋', name:'Câncer',      dates:'21 Jun–22 Jul', element:'Água',  ruler:'Lua',      traits:'sensível, protetor, intuitivo' },
+  { symbol:'♌', name:'Leão',        dates:'23 Jul–22 Ago', element:'Fogo',  ruler:'Sol',      traits:'generoso, criativo, dramático' },
+  { symbol:'♍', name:'Virgem',      dates:'23 Ago–22 Set', element:'Terra', ruler:'Mercúrio', traits:'analítico, perfeccionista, prestativo' },
+  { symbol:'♎', name:'Libra',       dates:'23 Set–22 Out', element:'Ar',    ruler:'Vênus',    traits:'justo, charmoso, indeciso' },
+  { symbol:'♏', name:'Escorpião',   dates:'23 Out–21 Nov', element:'Água',  ruler:'Plutão',   traits:'intenso, transformador, misterioso' },
+  { symbol:'♐', name:'Sagitário',   dates:'22 Nov–21 Dez', element:'Fogo',  ruler:'Júpiter',  traits:'otimista, aventureiro, filosófico' },
+  { symbol:'♑', name:'Capricórnio', dates:'22 Dez–19 Jan', element:'Terra', ruler:'Saturno',  traits:'ambicioso, disciplinado, pragmático' },
+  { symbol:'♒', name:'Aquário',     dates:'20 Jan–18 Fev', element:'Ar',    ruler:'Urano',    traits:'inovador, humanista, excêntrico' },
+  { symbol:'♓', name:'Peixes',      dates:'19 Fev–20 Mar', element:'Água',  ruler:'Netuno',   traits:'empático, sonhador, espiritual' },
+];
+
+let selectedSign = null, selectedMood = null, conversationHistory = [];
+let currentScreen = 1, selectedReligion = 'astrologia';
+let _shareData = null, _shareImageBlob = null;
+
+// ── BUILD SIGN GRID ──
+const grid = document.getElementById('signGrid');
+SIGNS.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'sign-card';
+  card.innerHTML = `<span class="sign-symbol">${s.symbol}</span><div class="sign-name">${s.name}</div>`;
+  card.onclick = () => {
+    document.querySelectorAll('.sign-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedSign = s;
+    document.getElementById('signNext').disabled = false;
+    const info = document.getElementById('signInfo');
+    info.style.display = 'block';
+    info.textContent = `${s.symbol} ${s.name} · ${s.element} · Regido por ${s.ruler} · ${s.dates}`;
+  };
+  grid.appendChild(card);
+});
+
+document.getElementById('birthDate').addEventListener('change', function() {
+  const d = new Date(this.value + 'T12:00:00');
+  if (!d) return;
+  const detected = detectSign(d.getMonth()+1, d.getDate());
+  if (detected) {
+    document.querySelectorAll('.sign-card').forEach((c, i) => c.classList.toggle('selected', SIGNS[i].name === detected.name));
+    selectedSign = detected;
+    document.getElementById('signNext').disabled = false;
+  }
+});
+
+function detectSign(m, d) {
+  if ((m===3&&d>=21)||(m===4&&d<=19)) return SIGNS[0];
+  if ((m===4&&d>=20)||(m===5&&d<=20)) return SIGNS[1];
+  if ((m===5&&d>=21)||(m===6&&d<=20)) return SIGNS[2];
+  if ((m===6&&d>=21)||(m===7&&d<=22)) return SIGNS[3];
+  if ((m===7&&d>=23)||(m===8&&d<=22)) return SIGNS[4];
+  if ((m===8&&d>=23)||(m===9&&d<=22)) return SIGNS[5];
+  if ((m===9&&d>=23)||(m===10&&d<=22)) return SIGNS[6];
+  if ((m===10&&d>=23)||(m===11&&d<=21)) return SIGNS[7];
+  if ((m===11&&d>=22)||(m===12&&d<=21)) return SIGNS[8];
+  if ((m===12&&d>=22)||(m===1&&d<=19)) return SIGNS[9];
+  if ((m===1&&d>=20)||(m===2&&d<=18)) return SIGNS[10];
+  return SIGNS[11];
+}
+
+// ── RELIGION SELECT ──
+function selectReligion(el) {
+  document.querySelectorAll('.rel-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedReligion = el.dataset.rel;
+  const cfg = RELIGIONS[selectedReligion];
+  // Apply theme
+  document.body.className = cfg.theme;
+  document.getElementById('mainSigil').textContent = cfg.sigil;
+}
+
+// ── MOOD ──
+function selectMood(el, mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMood = mood;
+  document.getElementById('moodNext').disabled = false;
+}
+
+// ── NAVIGATION ──
+const TOTAL = 7;
+function updateNav(n) {
+  document.getElementById('progressBar').style.width = (n / TOTAL * 100) + '%';
+  const labels = { 1:'ESCOLHA SUA TRADIÇÃO', 2:'SEU NOME', 3:'PASSO 3 DE 5', 4:'PASSO 4 DE 5', 5:'PASSO 5 DE 5', 6:'CONSULTANDO...', 7:'SUA LEITURA' };
+  document.getElementById('stepLabel').textContent = labels[n] || `PASSO ${n}`;
+  document.getElementById('navBack').className = n > 1 && n !== 6 ? 'nav-back visible' : 'nav-back';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.getElementById('sd' + i);
+    if (i < n) d.className = 'sdot done';
+    else if (i === n) d.className = 'sdot active';
+    else d.className = 'sdot';
+  }
+}
+
+function transitionTo(from, to, direction='right') {
+  const fEl = document.getElementById('screen' + from);
+  const tEl = document.getElementById('screen' + to);
+  tEl.className = direction === 'right' ? 'screen hidden-right' : 'screen hidden-left';
+  tEl.style.display = '';
+  requestAnimationFrame(() => {
+    fEl.className = direction === 'right' ? 'screen hidden-left' : 'screen hidden-right';
+    tEl.className = 'screen active';
+  });
+  currentScreen = to;
+  updateNav(to);
+  setTimeout(() => tEl.scrollTop = 0, 100);
+}
+
+function goToStep(n) {
+  const cfg = RELIGIONS[selectedReligion];
+  if (n === 2) {
+    // Apply UI labels for chosen religion
+    document.getElementById('nameSigil').textContent = cfg.sigil;
+    document.getElementById('nameTitle').textContent = cfg.title;
+    document.getElementById('nameSub').textContent = cfg.sub;
+    document.getElementById('step3Title').textContent = cfg.step3Title;
+    document.getElementById('step3Sub').textContent = cfg.step3Sub;
+    document.getElementById('step4Sub').textContent = cfg.step4Sub;
+    document.getElementById('step5Sigil').textContent = cfg.step5Sigil;
+    document.getElementById('step5Title').textContent = cfg.step5Title;
+    document.getElementById('step5Sub').textContent = cfg.step5Sub;
+    document.getElementById('problemLabel').textContent = cfg.problemLabel;
+    document.getElementById('consultBtn').textContent = cfg.consultBtn;
+  }
+  if (n === 3 && !document.getElementById('userName').value.trim()) {
+    document.getElementById('userName').focus(); return;
+  }
+  if (n === 6) {
+    if (!document.getElementById('problem').value.trim()) {
+      document.getElementById('problem').focus(); return;
+    }
+    transitionTo(currentScreen, 6);
+    startOracle();
+    return;
+  }
+  transitionTo(currentScreen, n);
+}
+
+function goBack() {
+  if (currentScreen <= 1 || currentScreen === 6) return;
+  transitionTo(currentScreen, currentScreen - 1, 'left');
+}
+
+// ── LOADING ──
+let loadIdx = 0, loadInterval;
+function startLoadingCycle() {
+  const msgs = RELIGIONS[selectedReligion].loadingMsgs;
+  const emoji = RELIGIONS[selectedReligion].loadingEmoji;
+  document.getElementById('orbitRing').style.setProperty('--emoji', `"${emoji}"`);
+  document.getElementById('orbitRing').setAttribute('data-emoji', emoji);
+  // patch emoji into ::after via inline override
+  document.getElementById('orbitRing').style.cssText = `width:80px;height:80px;border-radius:50%;border:2px solid transparent;border-top-color:var(--violet-light);border-right-color:var(--gold-dim);animation:orbit 1.2s linear infinite;position:relative;`;
+  loadIdx = 0;
+  document.getElementById('loadingText').textContent = msgs[0];
+  loadInterval = setInterval(() => {
+    loadIdx = (loadIdx + 1) % msgs.length;
+    document.getElementById('loadingText').textContent = msgs[loadIdx];
+  }, 2200);
+}
+function stopLoadingCycle() { clearInterval(loadInterval); }
+
+// ── UTILS ──
+function getToday() {
+  return new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+function getMoonPhase() {
+  const phases = ['🌑 Lua Nova','🌒 Crescente','🌓 Quarto Crescente','🌔 Gibosa Crescente','🌕 Lua Cheia','🌖 Gibosa Minguante','🌗 Quarto Minguante','🌘 Minguante'];
+  const d = new Date();
+  return phases[Math.floor(((d.getDate() + d.getMonth()*30) % 30) / 3.75)];
+}
+function numerologyLifePath(dateStr) {
+  if (!dateStr) return '?';
+  const digits = dateStr.replace(/-/g,'').split('').map(Number);
+  let sum = digits.reduce((a,b)=>a+b,0);
+  while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+    sum = String(sum).split('').map(Number).reduce((a,b)=>a+b,0);
+  }
+  return sum;
+}
+
+// ── PROMPT BUILDER ──
+function buildPrompt() {
+  const rel = selectedReligion;
+  const name = document.getElementById('userName').value || 'querido(a)';
+  const birth = document.getElementById('birthDate').value;
+  const sign = selectedSign;
+  const mood = selectedMood || 'neutro';
+  const energy = document.getElementById('energySlider').value;
+  const area = document.getElementById('lifeArea').value;
+  const problem = document.getElementById('problem').value;
+  const duration = document.getElementById('duration').value;
+  const today = getToday();
+  const moon = getMoonPhase();
+  const lifeNum = numerologyLifePath(birth);
+
+  const personas = {
+    astrologia: `Você é um astrólogo e guia espiritual experiente, sábio e empático. Responda APENAS em português brasileiro. Use linguagem acolhedora, poética mas prática.`,
+    candomble: `Você é um babalorixá experiente, sábio e respeitoso do Candomblé e Umbanda brasileiro. Responda APENAS em português brasileiro. Use termos do Candomblé (axé, orixá, terreiro, etc). Seja profundo, caloroso e espiritual.`,
+    espirita: `Você é um médium espírita kardecista culto e sensível. Responda APENAS em português brasileiro. Use conceitos do Espiritismo (karma, reencarnação, perispírito, guias, etc). Seja amoroso, luminoso e prático.`,
+    numerologia: `Você é um numerólogo brasileiro especialista. Responda APENAS em português brasileiro. Use conceitos numerológicos (número de vida, expressão, alma, ciclos, etc). Seja revelador e instigante.`,
+    'santo-daime': `Você é um mestre do Santo Daime e da União do Vegetal, conhecedor da floresta amazônica e da tradição do ayahuasca. Responda APENAS em português brasileiro. Use a linguagem da floresta, da força, da cura. Seja profundo e amoroso.`,
+    hinduismo: `Você é um pandita e astrólogo védico (Jyotish) com profundo conhecimento do Vedanta, dos Devas e do Dharma. Responda APENAS em português brasileiro. Use conceitos hindus (dharma, karma, chakra, mantra, etc). Seja sábio e elevado.`
+  };
+
+  const extraInfo = {
+    astrologia: ``,
+    candomble: `\nOrixá provável: calcule baseado no signo e data`,
+    espirita: `\nNúmero de Vida (kármico): ${lifeNum}`,
+    numerologia: `\nNúmero de Vida: ${lifeNum}\nNúmero de Expressão: calcule pelo nome`,
+    'santo-daime': `\nFase da Lua (força do Daime): ${moon}`,
+    hinduismo: `\nNakshatra aproximado: calcule pela data\nDharma indicado pelo signo`
+  };
+
+  const sectionNames = {
+    astrologia: { d:'diagnostico (momento astral)', i:'influencias (planetárias)', r:'reflexao (pergunta transformadora dos astros)', a1:'Ação Imediata', a2:'Cultivo Interior', a3:'Cuidado Astral', a4:'Horizonte', m:'mantra (frase poderosa)', p:'pedras cristais', c:'cores favoráveis', f:'momento_favoravel' },
+    candomble: { d:'diagnostico (axé atual, orixá regente)', i:'influencias (orixás influentes agora)', r:'reflexao (mensagem sagrada dos orixás)', a1:'Oferenda Recomendada', a2:'Trabalho Interior', a3:'O Que Evitar', a4:'Promessa dos Orixás', m:'mantra (ponto cantado ou saudação)', p:'ervas sagradas', c:'cores do orixá', f:'momento_favoravel' },
+    espirita: { d:'diagnostico (momento espiritual e kármico)', i:'influencias (guias e lições kármicas)', r:'reflexao (mensagem dos guias de luz)', a1:'Ação Kármica', a2:'Trabalho Espiritual', a3:'Padrão a Transcender', a4:'Promessa dos Guias', m:'mantra (afirmação espírita)', p:'passes e florais recomendados', c:'cores de proteção espiritual', f:'momento_favoravel' },
+    numerologia: { d:'diagnostico (vibração numerológica atual)', i:'influencias (ciclos e números ativos)', r:'reflexao (o que os números revelam)', a1:'Ação do Número de Vida', a2:'Trabalho Interno do Ciclo', a3:'Vibração a Evitar', a4:'O Que os Números Prometem', m:'mantra (afirmação do número)', p:'números favoráveis', c:'cores da vibração', f:'momento_favoravel' },
+    'santo-daime': { d:'diagnostico (força espiritual atual)', i:'influencias (ensinamentos da floresta)', r:'reflexao (o que a força revela)', a1:'Trabalho da Floresta', a2:'Cura Interior', a3:'O Que Pedir à Força', a4:'Promessa da Luz', m:'mantra (trecho inspirado num hino)', p:'plantas aliadas', c:'cores da cura', f:'momento_favoravel' },
+    hinduismo: { d:'diagnostico (dharma e karma atual)', i:'influencias (devas e planetas védicos)', r:'reflexao (ensinamento dos Upanishads)', a1:'Sadhana Recomendada', a2:'Trabalho de Karma', a3:'Apego a Libertar', a4:'Bênção dos Devas', m:'mantra (mantra sânscrito com tradução)', p:'devas e yantras', c:'cores dos chakras', f:'momento_favoravel' }
+  };
+  const s = sectionNames[rel];
+
+  return `${personas[rel]}
+
+DATA ATUAL: ${today}
+FASE DA LUA: ${moon}
+
+PERFIL:
+- Nome: ${name}
+- Nascimento: ${birth || 'não informado'}
+- Signo: ${sign ? sign.name+' ('+sign.dates+') · Elemento: '+sign.element+' · Regente: '+sign.ruler : 'não informado'}
+- Características: ${sign ? sign.traits : ''}${extraInfo[rel]}
+
+ESTADO ATUAL:
+- Humor: ${mood}
+- Energia: ${energy}/10
+- Área: ${area}
+- Situação: "${problem}"
+- Duração: ${duration}
+
+Responda APENAS com JSON válido, sem markdown, sem texto fora do JSON:
+
+{
+  "diagnostico": "2-3 frases sobre ${s.d}",
+  "influencias": "2-3 frases sobre ${s.i}",
+  "reflexao": "Uma pergunta ou ${s.r}",
+  "acoes": [
+    {"icone":"🌟","titulo":"${s.a1}","texto":"Descrição prática"},
+    {"icone":"🌱","titulo":"${s.a2}","texto":"Descrição prática"},
+    {"icone":"⚡","titulo":"${s.a3}","texto":"Descrição prática"},
+    {"icone":"🔮","titulo":"${s.a4}","texto":"Descrição prática"}
+  ],
+  "mantra": "Frase do ${s.m}",
+  "pedras": ["${s.p} 1","${s.p} 2"],
+  "cores": ["${s.c} 1","${s.c} 2"],
+  "momento_favoravel": "Descrição do ${s.f}"
+}`;
+}
+
+// ── API CALL ──
+async function callGroq(messages) {
+  const res = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_KEY}` },
+    body: JSON.stringify({ model: GROQ_MODEL, messages, temperature:0.85, max_tokens:900 })
+  });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.message || `HTTP ${res.status}`); }
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
+}
+
+async function startOracle() {
+  startLoadingCycle();
+  const prompt = buildPrompt();
+  const messages = [{ role:'user', content:prompt }];
+  try {
+    const raw = await callGroq(messages);
+    stopLoadingCycle();
+    let data;
+    try { data = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { throw new Error('Resposta inválida do oráculo.'); }
+    conversationHistory = [{ role:'user', content:prompt }, { role:'assistant', content:raw }];
+    renderOracle(data);
+    transitionTo(6, 7);
+  } catch(e) {
+    stopLoadingCycle();
+    document.getElementById('oracleContent').innerHTML = `<p style="color:#c0392b;font-style:italic;padding:1rem;">⚠️ ${e.message}</p>`;
+    transitionTo(6, 7);
+  }
+}
+
+function renderOracle(d) {
+  _shareData = d;
+  const name = document.getElementById('userName').value || 'Querido(a)';
+  const sign = selectedSign;
+  const cfg = RELIGIONS[selectedReligion];
+  const sl = cfg.sectionLabels;
+  const actionCards = d.acoes.map(a=>`
+    <div class="action-card">
+      <span class="action-card-icon">${a.icone}</span>
+      <div class="action-card-title">${a.titulo}</div>
+      <div class="action-card-text">${a.texto}</div>
+    </div>`).join('');
+  const chips = [...(d.pedras||[]).map(p=>`<div class="chip">💎 ${p}</div>`), ...(d.cores||[]).map(c=>`<div class="chip">🎨 ${c}</div>`)].join('');
+
+  document.getElementById('oracleContent').innerHTML = `
+    <div class="oracle-header">
+      <div class="oracle-sign-emoji">${sign ? sign.symbol : cfg.sigil}</div>
+      <div>
+        <div class="oracle-name">${name} · ${sign ? sign.name : ''}</div>
+        <div class="oracle-meta-sub">${getToday()}</div>
+        <div class="oracle-meta-sub">${getMoonPhase()}${sign ? ' · '+sign.element+' · '+sign.ruler : ''}</div>
+      </div>
+    </div>
+    <div class="section-title">${sl.main}</div>
+    <div class="oracle-text">${d.diagnostico}</div>
+    <div class="section-title">${sl.inf}</div>
+    <div class="oracle-text">${d.influencias}</div>
+    <div class="section-title">${sl.ref}</div>
+    <div class="reflec-box">"${d.reflexao}"</div>
+    <div class="section-title">${sl.ac}</div>
+    <div class="action-cards">${actionCards}</div>
+    <div class="section-title">${sl.man}</div>
+    <div class="mantra-box">"${d.mantra}"</div>
+    <div class="section-title">${sl.ali}</div>
+    <div class="chips-row">${chips}</div>
+    <div class="oracle-text" style="font-size:0.92rem; margin-top:0.5rem;">${d.momento_favoravel}</div>
+  `;
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => generateShareImage(d));
+  } else {
+    setTimeout(() => generateShareImage(d), 800);
+  }
+}
+
+// ── FOLLOW-UP ──
+async function sendFollowup() {
+  const input = document.getElementById('followInput');
+  const q = input.value.trim();
+  if (!q) return;
+  const btn = document.getElementById('followBtn');
+  btn.disabled = true;
+  const sign = selectedSign;
+  const name = document.getElementById('userName').value || 'você';
+  const rel = RELIGIONS[selectedReligion];
+  const ctx = `Você é um especialista em ${selectedReligion}. Usuário: ${name}, signo ${sign ? sign.name : 'desconhecido'}. Responda em pt-BR, acolhedor e prático. Máximo 4 frases.`;
+  conversationHistory.push({ role:'user', content:q });
+  const messages = [{ role:'user', content:ctx+'\n\n'+buildPrompt() }, ...conversationHistory.slice(1)];
+  const histDiv = document.getElementById('followHistory');
+  const entry = document.createElement('div');
+  entry.className = 'history-entry';
+  entry.innerHTML = `<div class="history-q">↳ ${q}</div><span>...</span>`;
+  histDiv.appendChild(entry);
+  try {
+    const reply = await callGroq(messages);
+    conversationHistory.push({ role:'assistant', content:reply });
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div>${reply}`;
+    input.value = '';
+  } catch(e) {
+    entry.innerHTML = `<div class="history-q">↳ ${q}</div><span style="color:#c0392b">Erro: ${e.message}</span>`;
+  }
+  btn.disabled = false;
+  input.focus();
+}
+document.getElementById('followInput').addEventListener('keydown', e => { if(e.key==='Enter') sendFollowup(); });
+
+// ── CANVAS / SHARE ──
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' '); let line = '', cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) { ctx.fillText(line.trim(), x, cy); line = words[i] + ' '; cy += lineHeight; }
+    else line = test;
+  }
+  ctx.fillText(line.trim(), x, cy); return cy + lineHeight;
+}
+function wrapTextCenter(ctx, text, cx, y, maxWidth, lineHeight) {
+  const savedAlign = ctx.textAlign; ctx.textAlign = 'center';
+  const words = text.split(' '); let line = '', cy = y;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) { ctx.fillText(line.trim(), cx, cy); line = words[i] + ' '; cy += lineHeight; }
+    else line = test;
+  }
+  ctx.fillText(line.trim(), cx, cy); ctx.textAlign = savedAlign; return cy + lineHeight;
+}
+
+async function generateShareImage(d) {
+  await new Promise(r => setTimeout(r, 50));
+  const canvas = document.getElementById('shareCanvas');
+  const W = 1080;
+  const name = (document.getElementById('userName').value || 'Consulente').toUpperCase();
+  const sign = selectedSign;
+  const today = new Date().toLocaleDateString('pt-BR', { day:'numeric', month:'long', year:'numeric' });
+  const PAD = 90, TW = W - PAD * 2;
+
+  function countLines(ctx, text, maxW, font) {
+    ctx.font = font;
+    const words = text.split(' '); let line = '', lines = 0;
+    for (let i = 0; i < words.length; i++) {
+      const test = line + words[i] + ' ';
+      if (ctx.measureText(test).width > maxW && i > 0) { lines++; line = words[i] + ' '; }
+      else line = test;
+    }
+    return lines + 1;
+  }
+  const tmp = document.createElement('canvas'); tmp.width = W; tmp.height = 100;
+  const tc = tmp.getContext('2d');
+  const diagLines   = countLines(tc, d.diagnostico, TW, 'italic 34px serif');
+  const mantraText  = '"' + d.mantra + '"';
+  const mantraLines = countLines(tc, mantraText, TW - 60, 'bold 36px serif');
+  const acaoLines   = countLines(tc, d.acoes[0].texto, TW, 'italic 32px serif');
+  const reflexLines = countLines(tc, '"' + d.reflexao + '"', TW, 'italic 32px serif');
+  const LH = 54;
+  const estimatedH = Math.max(0, 680 + diagLines*LH+80 + 80+mantraLines*LH+120 + acaoLines*LH+80 + reflexLines*LH+80 + 160);
+  const H = Math.max(1920, estimatedH);
+
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#0a0718'; ctx.fillRect(0, 0, W, H);
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0f0a22'); bg.addColorStop(0.5, '#0c0917'); bg.addColorStop(1, '#130b20');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  const topGlow = ctx.createLinearGradient(0, 0, 0, H*0.4);
+  topGlow.addColorStop(0, 'rgba(107,79,160,0.28)'); topGlow.addColorStop(1, 'rgba(107,79,160,0)');
+  ctx.fillStyle = topGlow; ctx.fillRect(0, 0, W, H*0.4);
+
+  const starPts = [[85,70],[250,130],[420,45],[580,95],[730,35],[870,110],[970,75],[60,300],[950,280],[110,700],[980,650],[200,900],[900,870],[150,1100],[970,1050],[80,1400],[960,1380],[300,1600],[850,1550],[180,1800],[920,1750],[500,60],[540,500],[480,1200]];
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  starPts.forEach(([x,y],i) => { const r = i%4===0?2:1.2; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); });
+
+  ctx.strokeStyle = 'rgba(201,168,76,0.3)'; ctx.lineWidth = 2; ctx.strokeRect(45,45,W-90,H-90);
+  ctx.strokeStyle = 'rgba(107,79,160,0.2)'; ctx.lineWidth = 1; ctx.strokeRect(60,60,W-120,H-120);
+  ctx.strokeStyle = 'rgba(201,168,76,0.35)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(130,165); ctx.lineTo(W-130,165); ctx.stroke();
+
+  function diamond(x,y,size,color) { ctx.fillStyle=color; ctx.beginPath(); ctx.moveTo(x,y-size); ctx.lineTo(x+size,y); ctx.lineTo(x,y+size); ctx.lineTo(x-size,y); ctx.closePath(); ctx.fill(); }
+  diamond(W/2,158,6,'rgba(201,168,76,0.7)'); diamond(W/2-60,158,4,'rgba(201,168,76,0.4)'); diamond(W/2+60,158,4,'rgba(201,168,76,0.4)');
+
+  const sigCX=W/2, sigCY=360, sigR=130;
+  ctx.save(); ctx.beginPath(); ctx.arc(sigCX,sigCY,sigR+30,0,Math.PI*2); ctx.clip();
+  const sigGlow=ctx.createLinearGradient(sigCX-sigR,sigCY-sigR,sigCX+sigR,sigCY+sigR);
+  sigGlow.addColorStop(0,'rgba(107,79,160,0.5)'); sigGlow.addColorStop(1,'rgba(60,30,100,0.1)');
+  ctx.fillStyle=sigGlow; ctx.fillRect(sigCX-sigR-30,sigCY-sigR-30,(sigR+30)*2,(sigR+30)*2); ctx.restore();
+  ctx.strokeStyle='rgba(160,122,208,0.6)'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(sigCX,sigCY,sigR,0,Math.PI*2); ctx.stroke();
+  ctx.font='130px serif'; ctx.fillStyle='rgba(200,180,255,0.95)';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(sign ? sign.symbol : RELIGIONS[selectedReligion].sigil, sigCX, sigCY);
+  ctx.textBaseline='alphabetic';
+
+  ctx.textAlign='center'; ctx.font='bold 56px serif'; ctx.fillStyle='#f0d080'; ctx.fillText(name,W/2,555);
+  ctx.font='italic 34px serif'; ctx.fillStyle='rgba(160,122,208,0.9)';
+  ctx.fillText(sign ? sign.name+'  ·  '+sign.element+'  ·  '+sign.ruler : RELIGIONS[selectedReligion].title, W/2, 610);
+  ctx.font='28px serif'; ctx.fillStyle='rgba(136,120,187,0.75)'; ctx.fillText(today,W/2,658);
+
+  function divider(y) {
+    const grad=ctx.createLinearGradient(100,y,W-100,y);
+    grad.addColorStop(0,'transparent'); grad.addColorStop(0.5,'rgba(201,168,76,0.3)'); grad.addColorStop(1,'transparent');
+    ctx.strokeStyle=grad; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(100,y); ctx.lineTo(W-100,y); ctx.stroke();
+  }
+  function sectionLabel(label,y) {
+    ctx.font='24px serif'; ctx.fillStyle='rgba(160,122,208,0.75)'; ctx.textAlign='left';
+    diamond(PAD+8,y-6,5,'rgba(201,168,76,0.6)'); ctx.fillText(label,PAD+22,y); return y+44;
+  }
+
+  let curY=710; divider(curY); curY+=50;
+  curY=sectionLabel('MOMENTO ESPIRITUAL',curY);
+  ctx.font='italic 34px serif'; ctx.fillStyle='rgba(232,224,255,0.92)'; ctx.textAlign='left';
+  curY=wrapText(ctx,d.diagnostico,PAD,curY,TW,LH); curY+=40; divider(curY); curY+=50;
+
+  {
+    const mText='"'+d.mantra+'"';
+    ctx.font='bold 36px serif';
+    const mLines=countLines(ctx,mText,TW-60,'bold 36px serif');
+    const boxH=70+mLines*50+60;
+    const bx=80,bw=W-160;
+    ctx.fillStyle='rgba(107,79,160,0.12)'; ctx.beginPath(); ctx.roundRect(bx,curY,bw,boxH,14); ctx.fill();
+    ctx.strokeStyle='rgba(201,168,76,0.3)'; ctx.lineWidth=1; ctx.beginPath(); ctx.roundRect(bx,curY,bw,boxH,14); ctx.stroke();
+    ctx.font='22px serif'; ctx.fillStyle='rgba(201,168,76,0.8)'; ctx.textAlign='center'; ctx.fillText('* MANTRA *',W/2,curY+42);
+    ctx.font='bold 36px serif'; ctx.fillStyle='#f0d080';
+    wrapTextCenter(ctx,mText,W/2,curY+88,TW-60,50); curY+=boxH+50;
+  }
+
+  curY=sectionLabel('ACAO IMEDIATA',curY);
+  ctx.font='italic 32px serif'; ctx.fillStyle='rgba(232,224,255,0.88)'; ctx.textAlign='left';
+  curY=wrapText(ctx,d.acoes[0].texto,PAD,curY,TW,LH); curY+=40; divider(curY); curY+=50;
+
+  curY=sectionLabel('REFLEXAO',curY);
+  ctx.font='italic 32px serif'; ctx.fillStyle='rgba(240,208,128,0.85)'; ctx.textAlign='left';
+  curY=wrapText(ctx,'"'+d.reflexao+'"',PAD,curY,TW,LH); curY+=60;
+
+  const footY=Math.max(curY+80,H-130); divider(footY-20);
+  ctx.font='26px serif'; ctx.fillStyle='rgba(160,122,208,0.7)'; ctx.textAlign='center';
+  ctx.fillText('* ORÁCULO ASTRAL *',W/2,footY+20);
+  ctx.font='20px serif'; ctx.fillStyle='rgba(136,120,187,0.5)';
+  ctx.fillText('Consulte os astros e descubra seu caminho',W/2,footY+58);
+
+  return new Promise(resolve => { canvas.toBlob(blob => { _shareImageBlob=blob; resolve(blob); },'image/png'); });
+}
+
+function downloadImage() {
+  const canvas=document.getElementById('shareCanvas');
+  const link=document.createElement('a');
+  const name=document.getElementById('userName').value||'oraculo';
+  link.download=`oraculo-astral-${name.toLowerCase().replace(/\s+/g,'-')}.png`;
+  link.href=canvas.toDataURL('image/png'); link.click();
+}
+
+async function shareNative(platform) {
+  if (!_shareData) return;
+  const canvas=document.getElementById('shareCanvas');
+  const sign=selectedSign;
+  if (platform!=='copy'&&platform!=='facebook'&&navigator.canShare) {
+    try {
+      const blob=_shareImageBlob||await new Promise(r=>canvas.toBlob(r,'image/png'));
+      _shareImageBlob=blob;
+      const file=new File([blob],'oraculo-astral.png',{type:'image/png'});
+      if (navigator.canShare({files:[file]})) {
+        await navigator.share({files:[file],title:`Minha leitura — ${sign ? sign.name : ''}`,text:`"${_shareData.mantra}" ✨ #OráculoAstral`});
+        return;
+      }
+    } catch(e) {}
+  }
+  if (platform==='copy') {
+    try {
+      const blob=_shareImageBlob||await new Promise(r=>canvas.toBlob(r,'image/png'));
+      _shareImageBlob=blob;
+      await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+      const fb=document.getElementById('copyFeedback');
+      fb.style.opacity='1'; setTimeout(()=>fb.style.opacity='0',2500);
+    } catch(e) { downloadImage(); }
+    return;
+  }
+  if (platform==='instagram'||platform==='threads'||platform==='whatsapp') {
+    downloadImage();
+    const msgs={instagram:'📥 Imagem salva!\n\nAbra o Instagram.',threads:'📥 Imagem salva!\n\nAbra o Threads.',whatsapp:'📥 Imagem salva!\n\nAbra o WhatsApp.'};
+    setTimeout(()=>alert(msgs[platform]),400); return;
+  }
+  if (platform==='twitter') {
+    const text=encodeURIComponent(`${sign ? sign.symbol : '✨'} Minha leitura espiritual:\n\n"${_shareData.mantra}"\n\n#OráculoAstral`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}`,'_blank'); downloadImage(); return;
+  }
+  if (platform==='facebook') { downloadImage(); setTimeout(()=>alert('📥 Imagem salva!\n\nAbra o Facebook.'),400); }
+}
+
+// ── RESET ──
+function resetAll() {
+  selectedSign=null; selectedMood=null; conversationHistory=[]; _shareData=null; _shareImageBlob=null;
+  selectedReligion='astrologia';
+  document.body.className='';
+  document.getElementById('mainSigil').textContent='✨';
+  document.querySelectorAll('.rel-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelector('.rel-card[data-rel="astrologia"]').classList.add('selected');
+  document.getElementById('userName').value='';
+  document.getElementById('birthDate').value='';
+  document.getElementById('problem').value='';
+  document.getElementById('energySlider').value=5;
+  document.getElementById('energyVal').textContent='5';
+  document.getElementById('followInput').value='';
+  document.getElementById('followHistory').innerHTML='';
+  document.getElementById('oracleContent').innerHTML='';
+  document.getElementById('signNext').disabled=true;
+  document.getElementById('moodNext').disabled=true;
+  document.querySelectorAll('.sign-card,.mood-btn').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('signInfo').style.display='none';
+  for (let i=1;i<=TOTAL;i++) {
+    const s=document.getElementById('screen'+i);
+    s.className=i===1?'screen active':'screen hidden-right';
+  }
+  currentScreen=1; updateNav(1);
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  });
+}
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); deferredPrompt=e;
+  setTimeout(()=>{ if(deferredPrompt) showInstallBanner(); },3000);
+});
+function showInstallBanner() { const b=document.getElementById('installBanner'); if(b){b.style.transform='translateY(0)';b.style.opacity='1';} }
+function installApp() { if(!deferredPrompt)return; deferredPrompt.prompt(); deferredPrompt.userChoice.then(c=>{deferredPrompt=null;dismissBanner();}); }
+function dismissBanner() { const b=document.getElementById('installBanner'); if(b){b.style.transform='translateY(120%)';b.style.opacity='0';setTimeout(()=>b.remove(),400);} }
+window.addEventListener('appinstalled',()=>{dismissBanner();deferredPrompt=null;});
+</script>
+</body>
+</html>
