@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oraculo-astral-v4';
+const CACHE_NAME = 'oraculo-astral-v5';
 const ASSETS = [
   '/manifest.json',
   '/icons/icon-192.png',
