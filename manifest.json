@@ -2,7 +2,7 @@
   "name": "Oráculo Astral",
   "short_name": "Oráculo",
   "description": "Os astros revelam o seu caminho. Consulta astral personalizada com IA.",
-  "start_url": "/",
+  "start_url": "./index.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
